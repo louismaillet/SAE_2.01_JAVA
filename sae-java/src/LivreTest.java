@@ -7,57 +7,55 @@ public class LivreTest {
     @Test
     public void testGetIsbn() {
         Livre livre = new Livre("12", "Livre Test", 100, "2023-01-01", 29.99);
-        assert "12".equals(livre.getIsbn());
+        assertEquals("12", livre.getIsbn());
         Livre livre2 = new Livre("1", "deuxieme Livre Test", 1, "2023-01-02", 20);
-        assert "1".equals(livre2.getIsbn());
+        assertEquals("1", livre2.getIsbn());
         Livre livre3 = new Livre("0", "Troisieme Livre Test", 1, "2023-01-03", 20);
-        assert !"15".equals(livre3.getIsbn());
+        assertNotEquals("15", livre3.getIsbn());
     }
 
     @Test
     public void testGetTitre() {
         Livre livre = new Livre("12", "Livre Test", 100, "2023-01-01", 29.99);
-        assert "Livre Test".equals(livre.getTitre());
+        assertEquals("Livre Test", livre.getTitre());
         Livre livre2 = new Livre("1", "deuxieme Livre Test", 1, "2023-01-02", 20);
-        assert "deuxieme Livre Test".equals(livre2.getTitre());
+        assertEquals("deuxieme Livre Test", livre2.getTitre());
         Livre livre3 = new Livre("0", "Troisieme Livre Test", 1, "2023-01-03", 20);
-        assert !"quatrieme Livre Test".equals(livre3.getTitre());
+        assertNotEquals("quatrieme Livre Test", livre3.getTitre());
     }
 
     @Test
     public void testGetNbPages() {
         Livre livre = new Livre("12", "Livre Test", 100, "2023-01-01", 29.99);
-        assert 100 == livre.getNbPages();
+        assertEquals(100, livre.getNbPages());
         Livre livre2 = new Livre("1", "deuxieme Livre Test", 1, "2023-01-02", 20);
-        assert 1 == livre2.getNbPages();
+        assertEquals(1, livre2.getNbPages());
         Livre livre3 = new Livre("0", "Troisieme Livre Test", 1, "2023-01-03", 20);
-        assert 0 != livre3.getNbPages();
+        assertNotEquals(0, livre3.getNbPages());
     }
 
     @Test
     public void testGetDatePubli() {
         Livre livre = new Livre("12", "Livre Test", 100, "2023-01-01", 29.99);
-        assert "2023-01-01".equals(livre.getDatePubli());
+        assertEquals("2023-01-01", livre.getDatePubli());
         Livre livre2 = new Livre("1", "deuxieme Livre Test", 1, "2023-01-02", 20);
-        assert "2023-01-02".equals(livre2.getDatePubli());
+        assertEquals("2023-01-02", livre2.getDatePubli());
         Livre livre3 = new Livre("0", "Troisieme Livre Test", 1, "2023-01-03", 20);
-        assert !"2023-01-04".equals(livre3.getDatePubli());
+        assertNotEquals("2023-01-04", livre3.getDatePubli());
     }
+    
 
     @Test
     public void testGetPrix() {
         Livre livre = new Livre("12", "Livre Test", 100, "2023-01-01", 29.99);
-        assert 29.99 == livre.getPrix();
-        Livre livre2 = new Livre("1", "deuxieme Livre Test", 1, "2023-01-02", 20);
-        assert 20 == livre2.getPrix();
-        Livre livre3 = new Livre("0", "Troisieme Livre Test", 1, "2023-01-03", 20);
-        assert 19 == livre3.getPrix();
+        assertEquals(29.99, livre.getPrix(),0.00); 
+        Livre livre2 = new Livre("1", "deuxieme Livre Test", 1, "2023-01-02", 20.0);
+        assertEquals(20.0, livre2.getPrix(),0.00);
+        Livre livre3 = new Livre("0", "Troisieme Livre Test", 1, "2023-01-03", 20.0);
+        assertNotEquals(20.1, livre3.getPrix(),0.00);
     }
-
     
 
-
-    
 }
 /** 
 javac -cp "lib/*" -d bin src/*.java
