@@ -1,11 +1,19 @@
 public class Livre {
-    private String isbn;
+    private int isbn;
     private String titre;
     private int nbPages;
     private String datePubli;
     private double prix;
 
-    public String getIsbn() {
+    public Livre(int isbn, String titre, int nbPages, String datePubli, double prix) {
+        this.isbn = isbn;
+        this.titre = titre;
+        this.nbPages = nbPages;
+        this.datePubli = datePubli;
+        this.prix = prix;
+    }
+
+    public int getIsbn() {
         return isbn;
     }
 
