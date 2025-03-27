@@ -55,7 +55,3 @@ public class LivreTest {
     
 
 }
-/** 
-javac -cp "lib/*" -d bin src/*.java
-java -cp "bin:lib/*" org.junit.runner.JUnitCore LivreTest 
-*/

@@ -4,3 +4,7 @@ public class App {
         
     }
 }
+/** 
+javac -cp "lib/*" -d bin src/*.java test/*.java
+java -cp "bin:lib/*" org.junit.runner.JUnitCore ClassificationTest ClientTest LivreTest 
+*/
