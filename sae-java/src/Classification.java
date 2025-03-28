@@ -11,5 +11,9 @@ public class Classification {
     public String getNomclass() {
         return this.nomclass;
     }
+    @Override
+    public String toString() {
+        return "L'id de la classification est " + this.id + " et le nom de la classification est " + this.nomclass;
+    }
 
 }
