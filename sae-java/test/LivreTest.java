@@ -12,6 +12,7 @@ public class LivreTest {
         Livre livre3 = new Livre(0, "Troisieme Livre Test", 1, "2023-01-03", 20);
         assertNotEquals(15, livre3.getIsbn());
     }
+
     @Test
     public void testGetTitre() {
         Livre livre = new Livre(12, "Livre Test", 100, "2023-01-01", 29.99);
@@ -41,17 +42,25 @@ public class LivreTest {
         Livre livre3 = new Livre(0, "Troisieme Livre Test", 1, "2023-01-03", 20);
         assertNotEquals("2023-01-04", livre3.getDatePubli());
     }
-    
 
     @Test
     public void testGetPrix() {
         Livre livre = new Livre(12, "Livre Test", 100, "2023-01-01", 29.99);
-        assertEquals(29.99, livre.getPrix(),0.00); 
+        assertEquals(29.99, livre.getPrix(), 0.00);
         Livre livre2 = new Livre(1, "deuxieme Livre Test", 1, "2023-01-02", 20.0);
-        assertEquals(20.0, livre2.getPrix(),0.00);
+        assertEquals(20.0, livre2.getPrix(), 0.00);
         Livre livre3 = new Livre(0, "Troisieme Livre Test", 1, "2023-01-03", 20.0);
-        assertNotEquals(20.1, livre3.getPrix(),0.00);
+        assertNotEquals(20.1, livre3.getPrix(), 0.00);
     }
-    
+
+    @Test
+    public void testToString() {
+        Livre livre = new Livre(12, "Livre Test", 100, "2023-01-01", 29.99);
+        String rep = "Le livre Livre Test a pour ISBN 12, il fait 100 pages, a été publié le 2023-01-01 et coûte 29.99 euros";
+        assertEquals(rep, livre.toString());
+        Livre livre2 = new Livre(1, "deuxieme Livre Test", 1, "2023-01-02", 20.0);
+        String rep2 = "Le livre deuxieme Livre Test a pour ISBN 1, il fait 1 pages, a été publié le 2023-01-02 et coûte 19.0 euros";
+        assertNotEquals(rep2, livre2.toString());
+    }
 
 }

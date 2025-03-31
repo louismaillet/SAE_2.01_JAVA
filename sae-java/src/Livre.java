@@ -32,4 +32,8 @@ public class Livre {
     public double getPrix() {
         return prix;
     }
+    @Override
+    public String toString() {
+        return "Le livre " + titre + " a pour ISBN " + isbn + ", il fait " + nbPages + " pages, a été publié le " + datePubli + " et coûte " + prix + " euros";
+    }
 }
