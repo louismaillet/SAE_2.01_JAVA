@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.List;
+
 public class Client {
     private int idcli;
     private String nomcli;
@@ -5,6 +8,8 @@ public class Client {
     private String adressecli;
     private String codepostal;
     private String villecli;
+    private List<Livre> livresDejaAcheter = new ArrayList<>();
+
 
     public Client(int idcli, String nomcli, String prenomcli, String adressecli, String codepostal, String villecli) {
         this.idcli = idcli;
@@ -13,6 +18,7 @@ public class Client {
         this.adressecli = adressecli;
         this.codepostal = codepostal;
         this.villecli = villecli;
+        livresDejaAcheter = new ArrayList<>();
     }
 
     public int getIdcli() {
@@ -37,6 +43,12 @@ public class Client {
 
     public String getVillecli() {
         return villecli;
+    }
+    public List<Livre> getLivresDejaAcheter() {
+        return livresDejaAcheter;
+    }
+    public void addLivre(Livre livre) {
+        livresDejaAcheter.add(livre);
     }
     
 }
