@@ -1,7 +1,7 @@
 public abstract class Personne {
-    private int id;
-    private String nom;
-    private String prenom;
+    protected int id;
+    protected String nom;
+    protected String prenom;
     public Personne(int id, String nom, String prenom){
         this.id = id;
         this.nom = nom;
