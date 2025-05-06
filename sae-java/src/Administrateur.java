@@ -1,8 +1,8 @@
-import java.util.*
+import java.util.*;
 
 public class Administrateur extends Personne{
-    List<Vendeur> listeVendeur = new Arraylist<>();
-    List<Magasin> listeMagasin = new Arraylist<>();
+    List<Vendeur> listeVendeur = new ArrayList<>();
+    List<Magasin> listeMagasin = new ArrayList<>();
 
     public Administrateur(int idAdmin, String nomAdmin, String prenomAdmin){
         super(idAdmin, nomAdmin, prenomAdmin);
@@ -19,10 +19,10 @@ public class Administrateur extends Personne{
 
     public void ajouterLibrairie(int idmag, String nommag, String villemag){
         if (listeMagasin.size() == 0){
-            Magasin magasin = new Magasin(0,String nommag, String villemag);
+            Magasin magasin = new Magasin(0, nommag,  villemag);
         }
         else{
-            Magasin magasin = new Magasin(listeMagasin.get(listeMagasin.size()).getIdmag(),String nommag, String villemag);
+            Magasin magasin = new Magasin(listeMagasin.get(listeMagasin.size()).getIdmag(), nommag, villemag);
         }
     }
 

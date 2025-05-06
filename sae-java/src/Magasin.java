@@ -6,7 +6,7 @@ public class Magasin {
     private String nommag;
     private String villemag;
     private List<Livre> listeLivres = new ArrayList<>();
-    private List<Employer> listeEmployes = new ArrayList<>();
+    private List<Vendeur> listeEmployes = new ArrayList<>();
     
 
     public Magasin(int idmag, String nommag, String villemag) {

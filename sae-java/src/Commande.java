@@ -2,16 +2,17 @@ public class Commande{
     private int numcom;
     private String date;
     private boolean enligne;
-    private ModeReception M2R;
+    private ModeReception modeDeReception;
 
-    public Commande (int numco, String date, boolean enligne, ModeReception Mode){
+    public Commande (int numco, String date, boolean enligne, ModeReception modeDeReception){
         this.numcom = numco;
         this.date = date;
         this.enligne = enligne;
-        this.M2R = Mode;
+        this.modeDeReception = modeDeReception;
     }
 
     public String editerFacture(){
-        String facture = "-------------------------------------------------------------------"
+        String facture = "-------------------------------------------------------------------";
+        return facture;
     }
 }

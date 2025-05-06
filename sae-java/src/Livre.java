@@ -13,7 +13,7 @@ public class Livre {
         this.datePubli = datePubli;
         this.prix = prix;
     }
-
+    // getteur setteur
     public int getIsbn() {
         return this.isbn;
     }

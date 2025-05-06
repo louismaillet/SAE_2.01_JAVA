@@ -1,3 +1,3 @@
 public enum RoleVendeur {
-    ResponsableMagasin, Vendeur, ConseillerVente, Stagiaire
+    RESPONSABLE_MAGASIN, VENDEUR, CONSEILLER_VENTE, STAGIAIRE
 }
