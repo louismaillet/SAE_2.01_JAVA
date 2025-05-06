@@ -4,8 +4,9 @@ public class Livre {
     private int nbPages;
     private String datePubli;
     private double prix;
+    private int quantite;
 
-    public Livre(int isbn, String titre, int nbPages, String datePubli, double prix) {
+    public Livre(int isbn, String titre, int nbPages, String datePubli, double prix, int quantite) {
         this.isbn = isbn;
         this.titre = titre;
         this.nbPages = nbPages;
@@ -14,23 +15,30 @@ public class Livre {
     }
 
     public int getIsbn() {
-        return isbn;
+        return this.isbn;
     }
 
     public String getTitre() {
-        return titre;
+        return this.titre;
     }
 
     public int getNbPages() {
-        return nbPages;
+        return this.nbPages;
     }
 
     public String getDatePubli() {
-        return datePubli;
+        return this.datePubli;
     }
 
     public double getPrix() {
-        return prix;
+        return this.prix;
+    }
+
+    public int getQuantite() {
+        return this.quantite;
+    }
+    public void setQuantite(int quantite) {
+        this.quantite = quantite;
     }
     @Override
     public String toString() {

@@ -1,54 +1,37 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class Client {
-    private int idcli;
-    private String nomcli;
-    private String prenomcli;
+public class Client extends Personne{
     private String adressecli;
     private String codepostal;
     private String villecli;
-    private List<Livre> livresDejaAcheter = new ArrayList<>();
+    private List<Livre> livresDejaAchetes = new ArrayList<>();
 
 
     public Client(int idcli, String nomcli, String prenomcli, String adressecli, String codepostal, String villecli) {
-        this.idcli = idcli;
-        this.nomcli = nomcli;
-        this.prenomcli = prenomcli;
+        super(idcli, nomcli, prenomcli);
         this.adressecli = adressecli;
         this.codepostal = codepostal;
         this.villecli = villecli;
-        livresDejaAcheter = new ArrayList<>();
-    }
-
-    public int getIdcli() {
-        return idcli;
-    }
-
-    public String getNomcli() {
-        return nomcli;
-    }
-
-    public String getPrenomcli() {
-        return prenomcli;
+        this.livresDejaAchetes = new ArrayList<>();
     }
 
     public String getAdressecli() {
-        return adressecli;
+        return this.adressecli;
     }
 
     public String getCodepostal() {
-        return codepostal;
+        return this.codepostal;
     }
 
     public String getVillecli() {
-        return villecli;
+        return this.villecli;
     }
     public List<Livre> getLivresDejaAcheter() {
-        return livresDejaAcheter;
+        return this.livresDejaAcheter;
     }
     public void addLivre(Livre livre) {
-        livresDejaAcheter.add(livre);
+        this.livresDejaAcheter.add(livre);
     }
     
 }

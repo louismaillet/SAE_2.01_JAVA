@@ -5,32 +5,37 @@ public class Magasin {
     private int idmag;
     private String nommag;
     private String villemag;
-    private List<Livre> livres = new ArrayList<>();
+    private List<Livre> listeLivres = new ArrayList<>();
+    private List<Employer> listeEmployes = new ArrayList<>();
     
 
     public Magasin(int idmag, String nommag, String villemag) {
         this.idmag = idmag;
         this.nommag = nommag;
         this.villemag = villemag;
-        this.livres = new ArrayList<>();
+        this.listeLivres = new ArrayList<>();
+        this.listeEmployes = new ArrayList<>();
     }
 
     public int getIdmag() {
-        return idmag;
+        return this.idmag;
     }
 
     public String getNommag() {
-        return nommag;
+        return this.nommag;
     }
 
     public String getVillemag() {
-        return villemag;
+        return this.villemag;
     }
 
     public void addLivre(Livre livre) {
-        livres.add(livre);
+        listeLivres.add(livre);
     }
 
+    public List<Livre> getListeLivres() {
+        return this.listeLivres;
+    }
 
 
     @Override
