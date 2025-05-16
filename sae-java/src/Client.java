@@ -28,10 +28,21 @@ public class Client extends Personne{
         return this.villecli;
     }
     public List<Livre> getLivresDejaAcheter() {
-        return this.livresDejaAcheter;
+        return this.livresDejaAchetes;
     }
     public void addLivre(Livre livre) {
-        this.livresDejaAcheter.add(livre);
+        this.livresDejaAchetes.add(livre);
     }
-    
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof Client)){
+            return false;
+        }
+        Client tmp = (Client) obj;
+        return this.nom.equals(tmp.nom) && this.prenom.equals(tmp.prenom) && this.adressecli.equals(tmp.adressecli) && this.codepostal.equals(tmp.codepostal);
+    }
 }

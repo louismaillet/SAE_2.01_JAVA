@@ -4,7 +4,7 @@ public class Vendeur extends Personne{
     public Vendeur(int idVend, String nomVend, String prenomVend, Magasin magasin, RoleVendeur role) {
         super(idVend, nomVend, prenomVend);
         this.magasin = magasin;
-        this.role = RoleVendeur.role;
+        this.role = role;
     }
     public Magasin getMagasin() {
         return this.magasin;
@@ -12,18 +12,32 @@ public class Vendeur extends Personne{
     public RoleVendeur getRole() {
         return this.role;
     }
-    public void ajouterLivreStock(int isbn, String titre, String auteur, String editeur, int annee, int prix, int quantite) {
-        Livre LivreAjouter = new Livre(isbn, titre, auteur, editeur, annee, prix, quantite);
+    public void ajouterLivreStock(int isbn, String titre, String auteur, String editeur, int annee, int prix, int quantite, int nbPages, String datePubli) {
+        Livre LivreAjouter = new Livre(isbn,  titre,  nbPages,  datePubli,  prix,  quantite);
         boolean livreExistant = false;
-        for (Livre livre : magasin.getLivres()) {
+        for (Livre livre : magasin.getListeLivres().keySet()) {
             if (livre.getIsbn() == isbn) {
-            livre.setQuantite(quantite);
-            livreExistant = true;
-            break;
+                magasin.getListeLivres().put(livre, magasin.getListeLivres().get(livre) + quantite);
+                livreExistant = true;
+                break;
             }
         }
         if (!livreExistant) {
-            magasin.addLivre(LivreAjouter);
+            magasin.getListeLivres().put(LivreAjouter, quantite);
         }
-    }        
+    }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof Vendeur)){
+            return false;
+        }
+        Vendeur tmp = (Vendeur) obj;
+        //return this.nom.equals(tmp.nom) && this.prenom.equals(tmp.prenom) && this.magasin.equals(tmp.magasin) && this.role.equals(tmp.role); FAIRE EQUALS DANS MAGASIN ET ROLEVENDEUR
+        return true;
+    }
 }
+
