@@ -1,44 +1,55 @@
-
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class App {
     public static void main(String[] args) {
+        try {
+            ConnexionMySQL connexion = new ConnexionMySQL();
+            connexion.connecter("servinfo-maria", "Librairie", "maillet", "maillet");
+            Scanner scanner = new Scanner(System.in);
 
-        Scanner scanner = new Scanner(System.in);
+            SuperAdmin superAdmin = new SuperAdmin(Database.magasins, Database.admins, Database.clients, Database.vendeurs);
 
-        SuperAdmin superAdmin = new SuperAdmin(Database.magasins, Database.admins, Database.clients, Database.vendeurs);
-
-        boolean running = true;
-
-        while (running) {
-            System.out.println("=== Menu Principal ===");
-            System.out.println("1. Administrateur");
-            System.out.println("2. Vendeur");
-            System.out.println("3. Client");
-            System.out.println("0. Quitter");
-            System.out.print("Choisissez votre rôle: ");
-            String choix = scanner.nextLine();
-
-            switch (choix) {
-                case "1":
-                    menuAdministrateur(scanner);
-                    break;
-                case "2":
-                    menuVendeur(scanner);
-                    break;
-                case "3":
-                    menuClient(scanner, superAdmin);
-                    break;
-                case "0":
-                    running = false;
-                    System.out.println("Au revoir !");
-                    break;
-                default:
-                    System.out.println("Choix invalide.");
+            boolean running = true;
+            if (connexion.getConnexion() == null) {
+            System.out.println("Erreur : connexion à la base de données échouée !");
+            return;
             }
-        }
-        scanner.close();
+
+            while (running) {
+                System.out.println("=== Menu Principal ===");
+                System.out.println("1. Administrateur");
+                System.out.println("2. Vendeur");
+                System.out.println("3. Client");
+                System.out.println("0. Quitter");
+                System.out.print("Choisissez votre rôle: ");
+                String choix = scanner.nextLine();
+
+                switch (choix) {
+                    case "1":
+                        menuAdministrateur(scanner);
+                        break;
+                    case "2":
+                        menuVendeur(scanner);
+                        break;
+                    case "3":
+                        menuClient(scanner, superAdmin, connexion);
+                        break;
+                    case "0":
+                        running = false;
+                        System.out.println("Au revoir !");
+                        break;
+                    default:
+                        System.out.println("Choix invalide.");
+                }
+            }
+            scanner.close();
+    } catch (ClassNotFoundException e) {
+        e.printStackTrace();
+    } catch (SQLException e) { // AJOUTE CE BLOC
+        e.printStackTrace();
     }
+}
 
     private static void menuAdministrateur(Scanner scanner) {
         boolean adminRunning = true;
@@ -111,7 +122,7 @@ public class App {
         }
     }
 
-    private static void menuClient(Scanner scanner, SuperAdmin superAdmin) {
+    private static void menuClient(Scanner scanner, SuperAdmin superAdmin, ConnexionMySQL connexion) {
         boolean clientRunning = true;
         while (clientRunning) {
             System.out.println("--- Menu Client ---");
@@ -124,6 +135,7 @@ public class App {
                 case "1":
                     System.out.println("Consultation des livres");
                     System.out.println("Liste des livres disponibles :");
+                    superAdmin.setListeLivres(SuperAdminBD.chargerLivres(connexion.getConnexion()));
                     System.out.println(superAdmin.getListeLivres());
                     break;
                 case "2":
@@ -139,6 +151,8 @@ public class App {
                 default:
                     System.out.println("Choix invalide.");
             }
-        }
+      
+    }
+
     }
 }

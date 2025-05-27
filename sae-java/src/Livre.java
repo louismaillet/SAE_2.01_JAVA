@@ -1,11 +1,11 @@
 public class Livre {
-    private int isbn;
+    private long isbn;
     private String titre;
     private int nbPages;
     private String datePubli;
     private double prix;
 
-    public Livre(int isbn, String titre, int nbPages, String datePubli, double prix, int quantite) {
+    public Livre(long isbn, String titre, int nbPages, String datePubli, double prix, int quantite) {
         this.isbn = isbn;
         this.titre = titre;
         this.nbPages = nbPages;
@@ -13,7 +13,7 @@ public class Livre {
         this.prix = prix;
     }
     // getteur setteur
-    public int getIsbn() {
+    public long getIsbn() {
         return this.isbn;
     }
 
@@ -34,12 +34,7 @@ public class Livre {
     }
     @Override
     public String toString() {
-        return "Livre :\n" +
-               "  Titre      : " + this.titre + "\n" +
-               "  ISBN       : " + this.isbn + "\n" +
-               "  Publié le  : " + this.datePubli + "\n" +
-               "  Prix       : " + String.format("%.2f", this.prix) + " €"+ "\n" +
-               "--------------------------------\n";
+        return this.titre + "\n  ISBN       : " + this.isbn + "\n  Publié le  : " + this.datePubli + "\n  Prix       : " + String.format("%.2f", this.prix) + " €\n--------------------------------\n";
     }
     @Override
     public boolean equals(Object obj) {

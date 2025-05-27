@@ -1,3 +1,5 @@
+import java.sql.*;
+
 public class Executable {
     public static void main(String[] args) {
         // Création de livres
@@ -56,5 +58,31 @@ public class Executable {
 
         System.out.println("\nFacture de la commande :");
         System.out.println(commande.editerFacture());
-    }
+
+
+        try {
+            ConnexionMySQL connexion = new ConnexionMySQL();
+            connexion.connecter("servinfo-maria", "Librairie", "maillet", "maillet"); 
+            System.out.println("Connexion : " + (connexion.isConnecte() ? "Réussie" : "Échouée"));
+            // N'oubliez pas de fermer la connexion à la fin si besoin :
+            Statement st= connexion.createStatement();
+            ResultSet rs=st.executeQuery("SELECT * FROM CLIENT");
+            while(rs.next()){
+                int idcli = rs.getInt("idcli");
+                String nomcli = rs.getString("nomcli");
+                String prenomcli = rs.getString("prenomcli");
+                String adresseCli = rs.getString("adressecli");
+                int codepostal = rs.getInt("codepostal");
+                String villecli = rs.getString("villecli");
+
+                System.out.printf("%-5d | %-15s | %-15s | %-30s  | %-8d | %-15s%n", 
+                    idcli, nomcli, prenomcli, adresseCli, codepostal, villecli);
+            }
+                    connexion.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+    }   
 }
