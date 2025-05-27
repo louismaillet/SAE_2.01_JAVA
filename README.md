@@ -4,4 +4,4 @@ Maillet Louis
 Belaarous Yassine
 Vingon-chaudey Clement
 Gezault Mateo
-
+Pour lancer l'application il vous suffit de ./App.sh
