@@ -1,21 +1,21 @@
-import java.util.List;
-import java.util.ArrayList;
+import java.util.*;
 
 public class Magasin {
     private int idmag;
     private String nommag;
     private String villemag;
-    private List<Livre> listeLivres = new ArrayList<>();
-    private List<Employer> listeEmployes = new ArrayList<>();
+    private Map<Livre,Integer> listeLivres = new HashMap<>();
+    private List<Vendeur> listeEmployes = new ArrayList<>();
     
 
     public Magasin(int idmag, String nommag, String villemag) {
         this.idmag = idmag;
         this.nommag = nommag;
         this.villemag = villemag;
-        this.listeLivres = new ArrayList<>();
+        this.listeLivres = new HashMap<>();
         this.listeEmployes = new ArrayList<>();
     }
+
 
     public int getIdmag() {
         return this.idmag;
@@ -29,17 +29,22 @@ public class Magasin {
         return this.villemag;
     }
 
-    public void addLivre(Livre livre) {
-        listeLivres.add(livre);
+    public void addLivre(Livre livre, int quantite) {
+        if (this.listeLivres.containsKey(livre)){
+            this.listeLivres.put(livre, this.listeLivres.get(livre)+quantite);
+        }
+        else{
+            listeLivres.put(livre, quantite);
+        }
     }
 
-    public List<Livre> getListeLivres() {
+    public Map<Livre, Integer> getListeLivres() {
         return this.listeLivres;
     }
 
 
     @Override
     public String toString() {
-        return "Le magasin " + nommag + " est situé à " + villemag + " et a pour ID " + idmag;
+        return "Le magasin " + this.nommag + " est situé à " + this.villemag + " et a pour ID " + this.idmag;
     }
 }

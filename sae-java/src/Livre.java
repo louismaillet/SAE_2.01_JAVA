@@ -1,20 +1,19 @@
 public class Livre {
-    private int isbn;
+    private long isbn;
     private String titre;
     private int nbPages;
     private String datePubli;
     private double prix;
-    private int quantite;
 
-    public Livre(int isbn, String titre, int nbPages, String datePubli, double prix, int quantite) {
+    public Livre(long isbn, String titre, int nbPages, String datePubli, double prix, int quantite) {
         this.isbn = isbn;
         this.titre = titre;
         this.nbPages = nbPages;
         this.datePubli = datePubli;
         this.prix = prix;
     }
-
-    public int getIsbn() {
+    // getteur setteur
+    public long getIsbn() {
         return this.isbn;
     }
 
@@ -33,15 +32,21 @@ public class Livre {
     public double getPrix() {
         return this.prix;
     }
-
-    public int getQuantite() {
-        return this.quantite;
-    }
-    public void setQuantite(int quantite) {
-        this.quantite = quantite;
-    }
     @Override
     public String toString() {
-        return "Le livre " + titre + " a pour ISBN " + isbn + ", il fait " + nbPages + " pages, a été publié le " + datePubli + " et coûte " + prix + " euros";
+        return this.titre + "\n  ISBN       : " + this.isbn + "\n  Publié le  : " + this.datePubli + "\n  Prix       : " + String.format("%.2f", this.prix) + " €\n--------------------------------\n";
     }
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof Livre)){
+            return false;
+        }
+        Livre tmp = (Livre) obj;
+        return this.titre.equals(tmp.titre) && this.nbPages == tmp.nbPages && this.datePubli.equals(tmp.datePubli) && this.prix == tmp.prix;
+    }
+
 }
