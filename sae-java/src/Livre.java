@@ -1,3 +1,4 @@
+
 public class Livre {
     private long isbn;
     private String titre;
@@ -32,9 +33,19 @@ public class Livre {
     public double getPrix() {
         return this.prix;
     }
+
+    public long getDernierISBN() {
+        return this.isbn;
+    }
+
     @Override
     public String toString() {
-        return this.titre + "\n  ISBN       : " + this.isbn + "\n  Publié le  : " + this.datePubli + "\n  Prix       : " + String.format("%.2f", this.prix) + " €\n--------------------------------\n";
+        return "Livre :\n" +
+               "  Titre      : " + this.titre + "\n" +
+               "  ISBN       : " + this.isbn + "\n" +
+               "  Publié le  : " + this.datePubli + "\n" +
+               "  Prix       : " + String.format("%.2f", this.prix) + " €"+ "\n" +
+               "--------------------------------\n";
     }
     @Override
     public boolean equals(Object obj) {
@@ -48,5 +59,9 @@ public class Livre {
         Livre tmp = (Livre) obj;
         return this.titre.equals(tmp.titre) && this.nbPages == tmp.nbPages && this.datePubli.equals(tmp.datePubli) && this.prix == tmp.prix;
     }
-
+    @Override
+    public int hashCode() {
+        return this.titre.hashCode() + this.nbPages + this.datePubli.hashCode() + (int) this.prix;
+    }
+	
 }

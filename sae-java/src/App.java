@@ -5,7 +5,7 @@ public class App {
     public static void main(String[] args) {
         try {
             ConnexionMySQL connexion = new ConnexionMySQL();
-            connexion.connecter("servinfo-maria", "Librairie", "maillet", "maillet");
+            connexion.connecter("servinfo-maria", "DBmaillet", "maillet", "maillet");
             Scanner scanner = new Scanner(System.in);
 
             SuperAdmin superAdmin = new SuperAdmin(Database.magasins, Database.admins, Database.clients, Database.vendeurs);
@@ -30,10 +30,10 @@ public class App {
                         menuAdministrateur(scanner);
                         break;
                     case "2":
-                        menuVendeur(scanner);
+                        menuVendeur(scanner, connexion);
                         break;
                     case "3":
-                        menuClient(scanner, superAdmin, connexion);
+                        menuClient(scanner, connexion);
                         break;
                     case "0":
                         running = false;
@@ -93,25 +93,45 @@ public class App {
         }
     }
 
-    private static void menuVendeur(Scanner scanner) {
+    private static void menuVendeur(Scanner scanner, ConnexionMySQL connexion) {
         boolean vendeurRunning = true;
         while (vendeurRunning) {
             System.out.println("--- Menu Vendeur ---");
             System.out.println("1. Ajouter un livre");
-            System.out.println("2. Modifier un livre");
-            System.out.println("3. Supprimer un livre");
+            System.out.println("2. Supprimer un livre");
             System.out.println("0. Retour");
             System.out.print("Votre choix: ");
             String choix = scanner.nextLine();
             switch (choix) {
                 case "1":
-                    System.out.println("Ajout de livre (fonctionnalité à implémenter)");
+                    System.out.println("Ajouter un livre");
+                    System.out.println("Entrez le nom du livre :");
+                    String nomLivre = scanner.nextLine();
+                    System.out.println("Entrez le nombre de pages :");
+                    int nbPages = scanner.nextInt();
+                    scanner.nextLine(); 
+                    System.out.println("Entrez la date de publication :");
+                    String datePubli = scanner.nextLine();
+                    System.out.println("Entrez le prix :");
+                    
+                    String prixStr = scanner.nextLine();
+                    double prix;
+                    try {
+                        prix = Double.parseDouble(prixStr);
+                    } catch (NumberFormatException e) {
+                        System.out.println("Prix invalide, veuillez entrer un nombre valide.");
+                        break;
+                    }
+                    long isbn = LivreBD.getDernierISBN(connexion.getConnexion()) + 1;
+                    Livre livre = new Livre(isbn, nomLivre, nbPages, datePubli, prix, 0);
+                    LivreBD.ajouterLivre(connexion.getConnexion(), livre);
                     break;
                 case "2":
-                    System.out.println("Modification de livre (fonctionnalité à implémenter)");
-                    break;
-                case "3":
-                    System.out.println("Suppression de livre (fonctionnalité à implémenter)");
+                    System.out.println("Suppression de livre");
+                    System.out.println("Entrez l'ISBN du livre à supprimer :");
+                    long isbnASupprimer = scanner.nextLong();
+                    LivreBD.supprimerLivre(connexion.getConnexion(), isbnASupprimer);
+                    System.out.println("Livre supprimé avec succès.");
                     break;
                 case "0":
                     vendeurRunning = false;
@@ -122,7 +142,7 @@ public class App {
         }
     }
 
-    private static void menuClient(Scanner scanner, SuperAdmin superAdmin, ConnexionMySQL connexion) {
+    private static void menuClient(Scanner scanner, ConnexionMySQL connexion) {
         boolean clientRunning = true;
         while (clientRunning) {
             System.out.println("--- Menu Client ---");
@@ -135,14 +155,14 @@ public class App {
                 case "1":
                     System.out.println("Consultation des livres");
                     System.out.println("Liste des livres disponibles :");
-                    superAdmin.setListeLivres(SuperAdminBD.chargerLivres(connexion.getConnexion()));
-                    System.out.println(superAdmin.getListeLivres());
+                    System.out.println(LivreBD.chargerLivres(connexion.getConnexion()));
+                
                     break;
                 case "2":
                 Scanner achatScanner = new Scanner(System.in);
                     System.out.println("Achat de livre");
-                    System.out.print("Entrez l'ID du livre à acheter : ");
-                    int idLivre = achatScanner.nextInt();
+                    System.out.println("Entrez l'ISBN du livre à acheter :");
+                    long isbn = achatScanner.nextLong();
                     System.out.println("Livre ajouté au panier");
                     break;
                 case "0":

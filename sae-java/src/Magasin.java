@@ -47,4 +47,34 @@ public class Magasin {
     public String toString() {
         return "Le magasin " + this.nommag + " est situé à " + this.villemag + " et a pour ID " + this.idmag;
     }
+    @Override
+    public boolean equals(Object o) {
+        if (o == null){
+            return false;
+        }
+        if (this == o){ 
+            return true;
+        }
+        if (!(o instanceof Magasin)){ 
+            return false;
+        }
+        Magasin magasin = (Magasin) o;
+        return idmag == magasin.idmag && Objects.equals(nommag, magasin.nommag) && Objects.equals(villemag, magasin.villemag);
+    }
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 31 * hash + idmag;
+        if (nommag == null) {
+            hash = 31 * hash;
+        } else {
+            hash = 31 * hash + nommag.hashCode();
+        }
+        if (villemag == null) {
+            hash = 31 * hash;
+        } else {
+            hash = 31 * hash + villemag.hashCode();
+        }
+        return hash;
+    }
 }
