@@ -45,4 +45,34 @@ public class Commande{
         facture += "\n-------------------------------------------------------------------";
         return facture;
     }
+    @Override
+    public boolean equals(Object o) {
+        if (o == null) {
+            return false;
+        }
+        if (this == o){
+            return true;
+        }
+        if (!(o instanceof Commande)) return false;
+        Commande commande = (Commande) o;
+        return numcom == commande.numcom &&
+               enligne == commande.enligne &&
+               Objects.equals(date, commande.date) &&
+               Objects.equals(listeDesLivresCommande, commande.listeDesLivresCommande) &&
+               modeDeReception == commande.modeDeReception;
+    }
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 27 * hash + numcom;
+        hash = 27 * hash + date.hashCode();
+        int enligneValue = 0;
+        if (enligne) {
+            enligneValue = 1;
+        }
+        hash = 27 * hash + enligneValue;
+        hash = 27 * hash + modeDeReception.hashCode();
+        hash = 27 * hash + listeDesLivresCommande.hashCode();
+        return hash;
+    }
 }

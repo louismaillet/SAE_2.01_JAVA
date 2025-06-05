@@ -9,7 +9,7 @@ public class Administrateur extends Personne{
     }
 
     public void creerCompteVendeur(String nomVend, String prenomVend, Magasin magasin, RoleVendeur role){
-        if (listeVendeur.size() == 0){
+        if (listeVendeur.isEmpty()){
             Vendeur vendeur = new Vendeur(0,  nomVend,  prenomVend,  magasin,  role);
             this.listeVendeur.add(vendeur);
         }
@@ -44,7 +44,7 @@ public class Administrateur extends Personne{
     }
 
     public void ajouterLibrairie(int idmag, String nommag, String villemag){
-        if (listeMagasin.size() == 0){
+        if (listeMagasin.isEmpty()){
             Magasin magasin = new Magasin(0, nommag,  villemag);
             listeMagasin.add(magasin);
         }

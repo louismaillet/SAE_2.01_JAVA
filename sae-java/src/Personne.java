@@ -16,5 +16,4 @@ public abstract class Personne {
     public String getPrenom() {
         return this.prenom;
     }
-    
 }
