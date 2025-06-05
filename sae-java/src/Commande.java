@@ -1,33 +1,52 @@
 
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.*;
 
 public class Commande{
     private List<Livre> listeDesLivresCommande;
     private int numcom;
-    private String date;
+    private LocalDate date;
     private boolean enligne;
     private ModeReception modeDeReception;
 
-    public Commande (int numco, String date, boolean enligne, ModeReception modeDeReception){
+    public Commande (int numco, ModeReception modeDeReception){
         this.numcom = numco;
-        this.date = date;
-        this.enligne = enligne;
+        this.date = LocalDate.now();
         this.modeDeReception = modeDeReception;
         this.listeDesLivresCommande = new ArrayList<>();
     }
 
+    public Commande() {
+        this.numcom = 0;
+        this.date = LocalDate.now();
+        this.modeDeReception = ModeReception.LIVRAISON;
+        this.listeDesLivresCommande = new ArrayList<>();
+    }
+    public void setNumcom(Connection conn) throws SQLException {
+        this.numcom = CommandeBD.getDernierIdCommande(conn) + 1;
+    }
+    public void setModeDeReception(ModeReception modeDeReception) {
+        this.modeDeReception = modeDeReception;
+    }
+    public int getIdCommande() {
+        return numcom;
+    }
+    public LocalDate getDate() {
+        return date;
+    }
     public void ajouterLivreACommande(Livre livre){
         listeDesLivresCommande.add(livre);
     }
 
     public String editerFacture(){
 
-        
         String facture = "-------------------------------------------------------------------";
+
 
         facture += "\nNuméro de commande : " + numcom;
         facture += "\nDate : " + date;
-        facture += "\nCommande en ligne : " + (enligne ? "Oui" : "Non");
         facture += "\nMode de réception : " + modeDeReception;
 
         

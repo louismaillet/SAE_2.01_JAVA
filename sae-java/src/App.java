@@ -149,11 +149,52 @@ public class App {
     }
 
     private static void menuClient(Scanner scanner, ConnexionMySQL connexion) {
+        Commande nouvelleCommande = new Commande();
+        try {
+            nouvelleCommande.setNumcom(connexion.getConnexion());
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la création de la commande : " + e.getMessage());
+            return;
+        }
+
+        System.out.println("Choisissez le mode de réception :");
+        System.out.println("1. Livraison");
+        System.out.println("2. Retrait en magasin");
+        String modeReceptionStr = scanner.nextLine();
+        ModeReception modeReception = ModeReception.LIVRAISON;
+        Magasin magasinChoisi = null;
+        if (modeReceptionStr.equals("2")) {
+            modeReception = ModeReception.ENMAGASIN;
+            // Afficher la liste des magasins
+            System.out.println("Veuillez choisir un magasin pour le retrait :");
+            for (Magasin m : MagasinBD.chargerMagasins(connexion.getConnexion())) {
+                System.out.println(m.getIdmag() + " - " + m.getNommag() + " (" + m.getVillemag() + ")");
+            }
+            System.out.print("Entrez l'ID du magasin : ");
+            int idMagasin = scanner.nextInt();
+            scanner.nextLine(); // Consommer le retour à la ligne
+            for (Magasin m : Database.magasins) {
+                if (m.getIdmag() == idMagasin) {
+                    magasinChoisi = m;
+                    break;
+                }
+            }
+            if (magasinChoisi == null) {
+                System.out.println("Magasin introuvable, commande annulée.");
+                return;
+            }
+            System.out.println("Vous avez choisi : " + magasinChoisi.getNommag() + " (" + magasinChoisi.getVillemag() + ")");
+        }
+        nouvelleCommande.setModeDeReception(modeReception);
+
+        System.out.println("Nouvelle commande créée (ID : " + nouvelleCommande.getIdCommande() + ")");
+
         boolean clientRunning = true;
         while (clientRunning) {
             System.out.println("--- Menu Client ---");
             System.out.println("1. Consulter les livres");
             System.out.println("2. Acheter un livre");
+            System.out.println("3. Consulter mon panier");
             System.out.println("0. Retour");
             System.out.print("Votre choix: ");
             String choix = scanner.nextLine();
@@ -162,32 +203,28 @@ public class App {
                     System.out.println("Consultation des livres");
                     System.out.println("Liste des livres disponibles :");
                     System.out.println(LivreBD.chargerLivres(connexion.getConnexion()));
-                
                     break;
                 case "2":
-
-                Scanner achatScanner = new Scanner(System.in);
                     System.out.println("Achat de livre");
                     System.out.println("Entrez l'ISBN du livre à acheter :");
-                    long isbn = achatScanner.nextLong();
-                    System.out.println("Quelle mode de livraison voulez vous ?");
-                    System.out.println("1. En ligne");
-                    System.out.println("2. En magasin");
-                    String choixLivraison = achatScanner.nextLine();
-                    Livre livreAchete = LivreBD.getLivreParISBN(connexion.getConnexion(), isbn);
-                    switch (choixLivraison) {
-                        case "1":
-                            System.out.println("Mode de livraison : En ligne");
-                            
-                            break;
-                        case "2":
-                            System.out.println("Mode de livraison : En magasin");
-                            break;
-                        default:
-                            System.out.println("Choix de livraison invalide.");
-                            continue; 
+                    long isbn = scanner.nextLong();
+                    scanner.nextLine(); // Consommer le retour à la ligne
+
+                    try {
+                        Livre livreAchete = LivreBD.getLivreParISBN(connexion.getConnexion(), isbn);
+                        if (livreAchete != null) {
+                            nouvelleCommande.ajouterLivreACommande(livreAchete);
+                            System.out.println("Livre ajouté à la commande : " + livreAchete.getTitre());
+                        } else {
+                            System.out.println("Livre non trouvé avec l'ISBN : " + isbn);
+                        }
+                    } catch (Exception e) {
+                        System.out.println("Erreur lors de l'achat du livre : " + e.getMessage());
                     }
-                    System.out.println("Livre ajouté au panier");
+                    break;
+                case "3":
+                    System.out.println("Consultation du panier");
+                    System.out.println(nouvelleCommande.editerFacture());
                     break;
                 case "0":
                     clientRunning = false;
@@ -195,8 +232,6 @@ public class App {
                 default:
                     System.out.println("Choix invalide.");
             }
-      
-    }
-
+        }
     }
 }
