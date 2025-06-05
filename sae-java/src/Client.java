@@ -1,7 +1,5 @@
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.HashSet;
 
 public class Client extends Personne{
     private String adressecli;
@@ -56,6 +54,8 @@ public class Client extends Personne{
         result = 31 * result + this.codepostal.hashCode();
         return result;
     }
+
+    /*
      public List<Livre> onVousRecommande(Client client) {
     Set<Livre> livresClient = new HashSet<>(client.getLivresDejaAcheter());
     Set<Livre> recommandations = new HashSet<>();
@@ -75,5 +75,5 @@ public class Client extends Personne{
         }
     }
     return new ArrayList<>(recommandations);
-}
+} */
 }

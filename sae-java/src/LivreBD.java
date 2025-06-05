@@ -46,19 +46,41 @@ public class LivreBD {
         }
     }
 
-    public static int getDernierISBN(Connection connexion) {
+    public static long getDernierISBN(Connection connexion) {
         String sql = "SELECT MAX(isbn) AS dernier_isbn FROM LIVRE";
         try (Statement stmt = connexion.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             if (rs.next()) {
                 long dernierIsbn = rs.getLong("dernier_isbn");
                 System.out.println("Dernier ISBN : " + dernierIsbn);
-                return (int) dernierIsbn;
+                return dernierIsbn;
             }
         } catch (SQLException e) {
             System.out.println("Erreur lors de la récupération du dernier ISBN : " + e.getMessage());
         }
-        return -1;
+        return 0;
+    }
+
+    public static Livre getLivreParISBN(Connection connexion, long isbn) {
+        String sql = "SELECT * FROM LIVRE WHERE isbn = ?";
+        try (PreparedStatement pstmt = connexion.prepareStatement(sql)) {
+            pstmt.setLong(1, isbn);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                String titre = rs.getString("titre");
+                int nbPages = rs.getInt("nbPages");
+                String datePubli = rs.getString("datePubli");
+                double prix = rs.getDouble("prix");
+                Livre livre = new Livre(isbn, titre, nbPages, datePubli, prix, 0);
+                System.out.println(livre);
+                return livre;
+            } else {
+                System.out.println("Aucun livre trouvé avec l'ISBN : " + isbn);
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la récupération du livre : " + e.getMessage());
+        }
+        return null;
     }
 
 

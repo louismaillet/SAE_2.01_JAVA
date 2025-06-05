@@ -14,7 +14,7 @@ public class App {
             if (connexion.getConnexion() == null) {
             System.out.println("Erreur : connexion à la base de données échouée !");
             return;
-            }
+            } 
 
             while (running) {
                 System.out.println("=== Menu Principal ===");
@@ -122,9 +122,15 @@ public class App {
                         System.out.println("Prix invalide, veuillez entrer un nombre valide.");
                         break;
                     }
-                    long isbn = LivreBD.getDernierISBN(connexion.getConnexion()) + 1;
-                    Livre livre = new Livre(isbn, nomLivre, nbPages, datePubli, prix, 0);
-                    LivreBD.ajouterLivre(connexion.getConnexion(), livre);
+                    // Générer un nouvel ISBN automatiquement
+                    long nouvelIsbn = LivreBD.getDernierISBN(connexion.getConnexion()) + 1;
+                    Livre livre = new Livre(nouvelIsbn, nomLivre, nbPages, datePubli, prix, 0);
+                    try {
+                        LivreBD.ajouterLivre(connexion.getConnexion(), livre);
+                        System.out.println("Livre ajouté avec succès (ISBN généré : " + nouvelIsbn + ").");
+                    } catch (Exception e) {
+                        System.out.println("Erreur lors de l'ajout du livre : " + e.getMessage());
+                    }
                     break;
                 case "2":
                     System.out.println("Suppression de livre");
@@ -159,10 +165,28 @@ public class App {
                 
                     break;
                 case "2":
+
                 Scanner achatScanner = new Scanner(System.in);
                     System.out.println("Achat de livre");
                     System.out.println("Entrez l'ISBN du livre à acheter :");
                     long isbn = achatScanner.nextLong();
+                    System.out.println("Quelle mode de livraison voulez vous ?");
+                    System.out.println("1. En ligne");
+                    System.out.println("2. En magasin");
+                    String choixLivraison = achatScanner.nextLine();
+                    Livre livreAchete = LivreBD.getLivreParISBN(connexion.getConnexion(), isbn);
+                    switch (choixLivraison) {
+                        case "1":
+                            System.out.println("Mode de livraison : En ligne");
+                            
+                            break;
+                        case "2":
+                            System.out.println("Mode de livraison : En magasin");
+                            break;
+                        default:
+                            System.out.println("Choix de livraison invalide.");
+                            continue; 
+                    }
                     System.out.println("Livre ajouté au panier");
                     break;
                 case "0":
