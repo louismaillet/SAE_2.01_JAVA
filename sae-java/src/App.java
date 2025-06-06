@@ -208,7 +208,7 @@ public class App {
                     System.out.println("Achat de livre");
                     System.out.println("Entrez l'ISBN du livre à acheter :");
                     long isbn = scanner.nextLong();
-                    scanner.nextLine(); // Consommer le retour à la ligne
+                    scanner.nextLine();
 
                     try {
                         Livre livreAchete = LivreBD.getLivreParISBN(connexion.getConnexion(), isbn);
@@ -226,8 +226,20 @@ public class App {
                     System.out.println("Consultation du panier");
                     System.out.println(nouvelleCommande.editerFacture());
                     break;
+                case "4":
+                    System.out.println("Voici une recommandation de livre :");
+                    //Livre livreRecommande = LivreBD.getLivreRecommande(connexion.getConnexion());
                 case "0":
-                    clientRunning = false;
+                    System.out.println("Etes-vous sûr de vouloir quitter le panier sera supprimé ?");
+                    System.out.println("1. Oui");
+                    System.out.println("2. Non");
+                    String confirmation = scanner.nextLine();
+                    if (confirmation.equals("1")) {
+                        System.out.println("Panier vidé.");
+                        clientRunning = false;
+                    } else {
+                        System.out.println("Panier conservé.");
+                    }
                     break;
                 default:
                     System.out.println("Choix invalide.");
