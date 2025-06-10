@@ -195,6 +195,7 @@ public class App {
             System.out.println("1. Consulter les livres");
             System.out.println("2. Acheter un livre");
             System.out.println("3. Consulter mon panier");
+            System.out.println("4. Recommandation de livre");
             System.out.println("0. Retour");
             System.out.print("Votre choix: ");
             String choix = scanner.nextLine();

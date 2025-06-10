@@ -5,6 +5,7 @@ public class Livre {
     private int nbPages;
     private String datePubli;
     private double prix;
+    private int quantite;
 
     public Livre(long isbn, String titre, int nbPages, String datePubli, double prix, int quantite) {
         this.isbn = isbn;
@@ -12,6 +13,7 @@ public class Livre {
         this.nbPages = nbPages;
         this.datePubli = datePubli;
         this.prix = prix;
+        this.quantite = quantite; 
     }
     // getteur setteur
     public long getIsbn() {
@@ -38,15 +40,36 @@ public class Livre {
         return this.isbn;
     }
 
-    @Override
-    public String toString() {
-        return "Livre :\n" +
-               "  Titre      : " + this.titre + "\n" +
-               "  ISBN       : " + this.isbn + "\n" +
-               "  Publié le  : " + this.datePubli + "\n" +
-               "  Prix       : " + String.format("%.2f", this.prix) + " €"+ "\n" +
-               "--------------------------------\n";
-    }
+
+@Override
+public String toString() {
+    String titreFormate = String.format("%-108s", this.titre);
+    String isbnFormate = String.format("%-102s", this.isbn);
+    String datePubliFormate = String.format("%-87s", this.datePubli);
+    String prixFormate = String.format("%-102s", this.prix);
+    String quantiteFormate = String.format("%-98s", this.quantite); // Placeholder for quantity
+
+    return "\n" +
+        "╔" + "═".repeat(110) + "╗\n" +
+        
+            
+        "║ " + titreFormate + " ║\n" +
+        "╚" + "═".repeat(110) + "╝\n" +
+        "╔" + "═".repeat(110) + "╗\n" +
+        "║ ISBN: " + isbnFormate + " ║\n" +
+        "║ Pages: " + String.format("%-101s", this.nbPages) + " ║\n" +
+        "║ Date de publication: " + datePubliFormate + " ║\n" +
+        "║ Prix: " + prixFormate + " ║\n" +
+        "║ Quantité: " + quantiteFormate + " ║\n" +
+        "╚" + "═".repeat(110) + "╝\n";
+
+
+
+           
+}
+
+
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj)

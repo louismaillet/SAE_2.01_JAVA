@@ -36,8 +36,7 @@ public class Vendeur extends Personne{
             return false;
         }
         Vendeur tmp = (Vendeur) obj;
-        //return this.nom.equals(tmp.nom) && this.prenom.equals(tmp.prenom) && this.magasin.equals(tmp.magasin) && this.role.equals(tmp.role); FAIRE EQUALS DANS MAGASIN ET ROLEVENDEUR
-        return true;
+        return this.nom.equals(tmp.nom) && this.prenom.equals(tmp.prenom) && this.magasin.equals(tmp.magasin) && this.role.equals(tmp.role);
     }
 }
 

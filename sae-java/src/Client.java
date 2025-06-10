@@ -55,6 +55,8 @@ public class Client extends Personne{
         return result;
     }
 
+    public List<Livre> onVousRecommande() {
+        
     /*
      public List<Livre> onVousRecommande(Client client) {
     Set<Livre> livresClient = new HashSet<>(client.getLivresDejaAcheter());
@@ -76,4 +78,6 @@ public class Client extends Personne{
     }
     return new ArrayList<>(recommandations);
 } */
+return new ArrayList<>();
+}
 }
