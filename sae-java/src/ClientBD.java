@@ -22,7 +22,7 @@ public class ClientBD {
         }
     }
 
-    public static int getDernierIdClient(ConnexionMySQL2 connexion) throws SQLException {
+    public static int getDernierIdClient(ConnexionMySQL connexion) throws SQLException {
         String sql = "SELECT MAX(idcli) FROM CLIENT";
         try (var stmt = connexion.createStatement();
              var rs = stmt.executeQuery(sql)) {

@@ -6,11 +6,11 @@ import java.util.Scanner;
 public class App {
     public static void main(String[] args) {
         EffacerTerminale.clearConsole(); // Clear console at startup
-        ConnexionMySQL2 connexion = null;
+        ConnexionMySQL connexion = null;
         Scanner scanner = new Scanner(System.in);
 
         try {
-            connexion = new ConnexionMySQL2(); // Attempt to establish database connection
+            connexion = new ConnexionMySQL(); // Attempt to establish database connection
 
             // Check if the connection was successful
             if (connexion.getConnexion() == null) {
@@ -71,7 +71,7 @@ public class App {
      * @param scanner The Scanner object for user input.
      * @param connexion The database connection object.
      */
-    private static void menuAdministrateur(Scanner scanner, ConnexionMySQL2 connexion) {
+    private static void menuAdministrateur(Scanner scanner, ConnexionMySQL connexion) {
         boolean adminRunning = true;
         while (adminRunning) {
             System.out.println("\n╔════════════════════════════════════════╗");
@@ -247,7 +247,7 @@ public class App {
     }
 
     
-    private static void menuVendeur(Scanner scanner, ConnexionMySQL2 connexion) {
+    private static void menuVendeur(Scanner scanner, ConnexionMySQL connexion) {
         EffacerTerminale.clearConsole();
         boolean vendeurRunning = true;
         System.out.println("Connectez-vous en tant que vendeur.");
@@ -442,7 +442,7 @@ public class App {
     }
 
     
-    private static void menuClient(Scanner scanner, ConnexionMySQL2 connexion) throws SQLException {
+    private static void menuClient(Scanner scanner, ConnexionMySQL connexion) throws SQLException {
         EffacerTerminale.clearConsole();
         Client currentClient = null;
 
