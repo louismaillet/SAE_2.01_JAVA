@@ -11,7 +11,7 @@ public class App {
 
         try {
             connexion = new ConnexionMySQL(); 
-            connexion.connecter("servinfo-maria", "Librairie", "maillet", "maillet");
+            connexion.connecter("servinfo-maria", "DBmaillet", "maillet", "maillet");
             // Check if the connection was successful
             if (connexion.getConnexion() == null) {
                 System.out.println("❌ Erreur : La connexion à la base de données a échoué. Veuillez vérifier les paramètres de connexion.");
@@ -456,7 +456,7 @@ public class App {
             if (choixCompte.equals("2")) {
                 System.out.print("Entrez votre nom : ");
                 String nomClient = scanner.nextLine();
-                System.out.print("Etrez votre prenom : ");
+                System.out.print("Entrez votre prenom : ");
                 String prenomClient = scanner.nextLine();
                 System.out.print("Entrez votre adresse : ");
                 String adresseClient = scanner.nextLine();
@@ -617,9 +617,15 @@ public class App {
                     try {
                         Livre livreAchete = LivreBD.getLivreParISBN(connexion.getConnexion(), isbn);
                         System.out.println("Combien de livres voulez-vous acheter ?");
+                         
                         int quantite = 0;
                         try {
                             quantite = scanner.nextInt();
+                            if (livreAchete.getQuantite()-quantite < 0) {
+                                System.out.println("❌ Quantité demandée supérieure à la quantité disponible en stock.");
+                                scanner.nextLine(); // Consommer le retour à la ligne
+                                break;
+                            }
                             scanner.nextLine(); // Consommer le retour à la ligne
                         } catch (InputMismatchException e) {
                             System.out.println("❌ Saisie invalide. Veuillez entrer un nombre entier pour la quantité.");
