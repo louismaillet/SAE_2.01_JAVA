@@ -31,16 +31,8 @@ public class LivreBD {
         }
         return livres;
     }
-
     
-    
-    
-    
-    
-    
-    
-    
-        public static List<Livre> chargerLivres(Connection connexion) {
+    public static List<Livre> chargerLivres(Connection connexion) {
         List<Livre> livres = new ArrayList<>();
         try {
             String sql = "SELECT LIVRE.isbn, titre, nbPages, datePubli, prix, SUM(qte) AS quantite_totale FROM LIVRE NATURAL JOIN POSSEDER GROUP BY LIVRE.isbn, titre, nbPages, datePubli, prix ORDER BY LIVRE.isbn";
@@ -52,7 +44,7 @@ public class LivreBD {
                 int nbPages = rs.getInt("nbPages");
                 String datePubli = rs.getString("datePubli");
                 double prix = rs.getDouble("prix");
-                int quantite = rs.getInt("quantite_totale"); // <-- correction ici
+                int quantite = rs.getInt("quantite_totale");
                 Livre livre = new Livre(isbn, titre, nbPages, datePubli, prix, quantite);
                 livres.add(livre);
             }
@@ -97,6 +89,7 @@ public class LivreBD {
             System.out.println("Erreur lors de l'ajout du livre : " + e.getMessage());
         }
     }
+    
     public static void supprimerLivre(Connection connexion, long isbn) {
         String sql = "DELETE FROM LIVRE WHERE isbn = ?";
         try (PreparedStatement pstmt = connexion.prepareStatement(sql)) {
@@ -126,9 +119,39 @@ public class LivreBD {
     }
 
     public static Livre getLivreParISBN(Connection connexion, long isbn) {
-        String sql = "SELECT * FROM LIVRE NATURAL JOIN MAGASIN NATURAL JOIN POSSEDER WHERE isbn = ?";
+        String sql = "SELECT LIVRE.isbn, titre, nbPages, datePubli, prix, SUM(qte) AS qte " +
+                 "FROM LIVRE NATURAL JOIN POSSEDER " +
+                 "WHERE LIVRE.isbn = ? " +
+                 "GROUP BY LIVRE.isbn, titre, nbPages, datePubli, prix";
         try (PreparedStatement pstmt = connexion.prepareStatement(sql)) {
             pstmt.setLong(1, isbn);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                String titre = rs.getString("titre");
+                int nbPages = rs.getInt("nbPages");
+                String datePubli = rs.getString("datePubli");
+                double prix = rs.getDouble("prix");
+                int quantite = rs.getInt("qte");
+                Livre livre = new Livre(isbn, titre, nbPages, datePubli, prix, quantite);
+                System.out.println(livre);
+                return livre;
+            } else {
+                System.out.println("Aucun livre trouvé avec l'ISBN : " + isbn);
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la récupération du livre : " + e.getMessage());
+        }
+        return null;
+    }
+
+    public static Livre getLivreParIsbnEtMagasin(Connection connexion, long isbn, int idmag) {
+        String sql = "SELECT LIVRE.isbn, titre, nbPages, datePubli, prix, SUM(qte) AS qte " +
+                 "FROM LIVRE NATURAL JOIN POSSEDER " +
+                 "WHERE LIVRE.isbn = ? AND idmag = ? " +
+                 "GROUP BY LIVRE.isbn, titre, nbPages, datePubli, prix";
+        try (PreparedStatement pstmt = connexion.prepareStatement(sql)) {
+            pstmt.setLong(1, isbn);
+            pstmt.setInt(2, idmag);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 String titre = rs.getString("titre");
@@ -152,33 +175,27 @@ public class LivreBD {
         String sqlLivre = "INSERT INTO LIVRE (isbn, titre, nbPages, datePubli, prix) VALUES (?, ?, ?, ?, ?)";
         String sqlPosseder = "INSERT INTO POSSEDER (isbn, idmag, qte) VALUES (?, ?, ?)";
         try {
-            // Désactiver l'auto-commit pour la transaction
             connexion.setAutoCommit(false);
 
-            // Ajouter le livre dans LIVRE
-            try (PreparedStatement pstmtLivre = connexion.prepareStatement(sqlLivre)) {
-                pstmtLivre.setLong(1, livre.getIsbn());
-                pstmtLivre.setString(2, livre.getTitre());
-                pstmtLivre.setInt(3, livre.getNbPages());
-                pstmtLivre.setString(4, livre.getDatePubli());
-                pstmtLivre.setDouble(5, livre.getPrix());
-                pstmtLivre.executeUpdate();
+            try (PreparedStatement pstmt = connexion.prepareStatement(sqlLivre)) {
+                pstmt.setLong(1, livre.getIsbn());
+                pstmt.setString(2, livre.getTitre());
+                pstmt.setInt(3, livre.getNbPages());
+                pstmt.setString(4, livre.getDatePubli());
+                pstmt.setDouble(5, livre.getPrix());
+                pstmt.executeUpdate();
             } catch (SQLException e) {
-                // Si le livre existe déjà, ignorer l'erreur (clé primaire)
-                if (!e.getSQLState().equals("23505")) { // 23505 = violation de contrainte d'unicité (PostgreSQL)
-                    throw e;
-                }
+                System.out.println("Erreur lors de l'ajout du livre : " + e.getMessage());
+                
             }
 
-            // Ajouter la relation dans POSSEDER
-            try (PreparedStatement pstmtPosseder = connexion.prepareStatement(sqlPosseder)) {
-                pstmtPosseder.setLong(1, livre.getIsbn());
-                pstmtPosseder.setInt(2, idmag);
-                pstmtPosseder.setInt(3, livre.getQuantite());
-                pstmtPosseder.executeUpdate();
+            try (PreparedStatement pstmt = connexion.prepareStatement(sqlPosseder)) {
+                pstmt.setLong(1, livre.getIsbn());
+                pstmt.setInt(2, idmag);
+                pstmt.setInt(3, livre.getQuantite());
+                pstmt.executeUpdate();
             }
 
-            // Valider la transaction
             connexion.commit();
         } catch (SQLException e) {
             try {
@@ -195,6 +212,41 @@ public class LivreBD {
             }
         }
     }
+
+    public static void modifierQteLivre(Connection connexion, long isbn, int idmag, int nouvelleQuantite) {
+        int quantiteActuelle = 0;
+        String sqlSelect = "SELECT qte FROM POSSEDER WHERE isbn = ? AND idmag = ?";
+        try (PreparedStatement pstmt = connexion.prepareStatement(sqlSelect)) {
+            pstmt.setLong(1, isbn);
+            pstmt.setInt(2, idmag);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                quantiteActuelle = rs.getInt("qte");
+                System.out.println("Quantité actuelle : " + quantiteActuelle);
+            } else {
+                System.out.println("Aucune entrée trouvée pour cet ISBN et ce magasin.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la récupération de la quantité actuelle : " + e.getMessage());
+        }
+
+        String sql = "UPDATE POSSEDER SET qte = ? " +
+                     "WHERE isbn = ? AND idmag = ?";
+        try (PreparedStatement pstmt = connexion.prepareStatement(sql)) {
+            pstmt.setInt(1, quantiteActuelle - nouvelleQuantite);
+            pstmt.setLong(2, isbn);
+            pstmt.setInt(3, idmag);
+            int rowsAffected = pstmt.executeUpdate();
+            if (rowsAffected == 0) {
+                System.out.println("Aucune mise à jour effectuée (ISBN ou ID magasin introuvable).");
+            } else {
+                System.out.println("Quantité mise à jour avec succès.");
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la mise à jour de la quantité du livre : " + e.getMessage());
+        }   
+    }
+
 
 
 }
