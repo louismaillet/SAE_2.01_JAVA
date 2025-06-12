@@ -1,4 +1,3 @@
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -8,14 +7,16 @@ public class Commande{
     private List<Livre> listeDesLivresCommande;
     private int numcom;
     private LocalDate date;
-    private boolean enligne;
     private ModeReception modeDeReception;
+    private String magasinLivraison;
 
     public Commande (int numco, ModeReception modeDeReception){
         this.numcom = numco;
         this.date = LocalDate.now();
         this.modeDeReception = modeDeReception;
         this.listeDesLivresCommande = new ArrayList<>();
+        ma
+
     }
 
     public Commande() {
@@ -50,14 +51,16 @@ public class Commande{
         facture += "\nMode de réception : " + modeDeReception;
 
         
-        for (Livre livre : listeDesLivresCommande) {
-            facture += "\n" + livre.toString();
+        for (Livre livre : new HashSet<>(listeDesLivresCommande)) {
+            int quantite = Collections.frequency(listeDesLivresCommande, livre);
+            facture += "\n" + livre.toString().replace("Quantité: 0", "Quantité: " + quantite);
         }
         facture += "\nTotal livres : " + listeDesLivresCommande.size();
         double total = 0.0;
         for (Livre livre : listeDesLivresCommande) {
             total += livre.getPrix();
         }
+        total = Math.round(total * 100.00) / 100.00;
         facture += "\nTotal facture : " + total + " €";
 
         
@@ -75,7 +78,6 @@ public class Commande{
         if (!(o instanceof Commande)) return false;
         Commande commande = (Commande) o;
         return numcom == commande.numcom &&
-               enligne == commande.enligne &&
                Objects.equals(date, commande.date) &&
                Objects.equals(listeDesLivresCommande, commande.listeDesLivresCommande) &&
                modeDeReception == commande.modeDeReception;
@@ -86,9 +88,7 @@ public class Commande{
         hash = 27 * hash + numcom;
         hash = 27 * hash + date.hashCode();
         int enligneValue = 0;
-        if (enligne) {
-            enligneValue = 1;
-        }
+        
         hash = 27 * hash + enligneValue;
         hash = 27 * hash + modeDeReception.hashCode();
         hash = 27 * hash + listeDesLivresCommande.hashCode();

@@ -19,7 +19,9 @@ public class Livre {
     public long getIsbn() {
         return this.isbn;
     }
-
+    public int getQuantite() {
+        return this.quantite;
+    }
     public String getTitre() {
         return this.titre;
     }
@@ -38,6 +40,10 @@ public class Livre {
 
     public long getDernierISBN() {
         return this.isbn;
+    }
+
+    public void setQuantite(int quantite) {
+        this.quantite = quantite;
     }
 
 

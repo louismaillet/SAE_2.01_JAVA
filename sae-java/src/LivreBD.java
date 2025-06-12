@@ -6,15 +6,17 @@ public class LivreBD {
     public static List<Livre> chargerLivres(Connection connexion) {
         List<Livre> livres = new ArrayList<>();
         try {
+            String sql = "SELECT LIVRE.isbn, titre, nbPages, datePubli, prix, SUM(qte) AS quantite_totale FROM LIVRE NATURAL JOIN POSSEDER GROUP BY LIVRE.isbn, titre, nbPages, datePubli, prix ORDER BY LIVRE.isbn";
             Statement st = connexion.createStatement();
-            ResultSet rs = st.executeQuery("SELECT * FROM LIVRE");
-            while(rs.next()){
+            ResultSet rs = st.executeQuery(sql);
+            while (rs.next()) {
                 long isbn = rs.getLong("isbn");
                 String titre = rs.getString("titre");
                 int nbPages = rs.getInt("nbPages");
                 String datePubli = rs.getString("datePubli");
                 double prix = rs.getDouble("prix");
-                Livre livre = new Livre(isbn, titre, nbPages, datePubli, prix, 0);
+                int quantite = rs.getInt("quantite_totale"); // <-- correction ici
+                Livre livre = new Livre(isbn, titre, nbPages, datePubli, prix, quantite);
                 livres.add(livre);
             }
         } catch (SQLException e) {
@@ -22,7 +24,29 @@ public class LivreBD {
         }
         return livres;
     }
-    
+
+    public static List<Livre> chargerLivresParMagasin(Connection connexion, int idmag) {
+        List<Livre> livres = new ArrayList<>();
+        String sql = "SELECT LIVRE.isbn, titre, nbPages, datePubli, prix, POSSEDER.qte FROM LIVRE NATURAL JOIN POSSEDER WHERE idmag = ? ORDER BY LIVRE.isbn";
+        try (PreparedStatement pstmt = connexion.prepareStatement(sql)) {
+            pstmt.setInt(1, idmag);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                long isbn = rs.getLong("isbn");
+                String titre = rs.getString("titre");
+                int nbPages = rs.getInt("nbPages");
+                String datePubli = rs.getString("datePubli");
+                double prix = rs.getDouble("prix");
+                int quantite = rs.getInt("qte");
+                Livre livre = new Livre(isbn, titre, nbPages, datePubli, prix, quantite);
+                livres.add(livre);
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la récupération des livres par magasin : " + e.getMessage());
+        }
+        return livres;
+    }
+
     public static void ajouterLivre(Connection connexion, Livre livre) {
         String sql = "INSERT INTO LIVRE (isbn, titre, nbPages, datePubli, prix) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement pstmt = connexion.prepareStatement(sql)) {
@@ -40,7 +64,10 @@ public class LivreBD {
         String sql = "DELETE FROM LIVRE WHERE isbn = ?";
         try (PreparedStatement pstmt = connexion.prepareStatement(sql)) {
             pstmt.setLong(1, isbn);
-            pstmt.executeUpdate();
+            int affectedRows = pstmt.executeUpdate();
+            if (affectedRows == 0) {
+                System.out.println("Aucun livre supprimé (ISBN introuvable).");
+            }
         } catch (SQLException e) {
             System.out.println("Erreur lors de la suppression du livre : " + e.getMessage());
         }
@@ -62,7 +89,7 @@ public class LivreBD {
     }
 
     public static Livre getLivreParISBN(Connection connexion, long isbn) {
-        String sql = "SELECT * FROM LIVRE WHERE isbn = ?";
+        String sql = "SELECT * FROM LIVRE NATURAL JOIN MAGASIN NATURAL JOIN POSSEDER WHERE isbn = ?";
         try (PreparedStatement pstmt = connexion.prepareStatement(sql)) {
             pstmt.setLong(1, isbn);
             ResultSet rs = pstmt.executeQuery();
@@ -71,7 +98,8 @@ public class LivreBD {
                 int nbPages = rs.getInt("nbPages");
                 String datePubli = rs.getString("datePubli");
                 double prix = rs.getDouble("prix");
-                Livre livre = new Livre(isbn, titre, nbPages, datePubli, prix, 0);
+                int quantite = rs.getInt("qte");
+                Livre livre = new Livre(isbn, titre, nbPages, datePubli, prix, quantite);
                 System.out.println(livre);
                 return livre;
             } else {

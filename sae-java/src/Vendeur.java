@@ -6,6 +6,17 @@ public class Vendeur extends Personne{
         this.magasin = magasin;
         this.role = role;
     }
+
+    Vendeur(int idVend, String nomVend, String prenomVend) {
+        super(idVend, nomVend, prenomVend);
+        this.magasin = null; 
+        this.role = RoleVendeur.VENDEUR; 
+    }
+
+    public void setMagasin(Magasin magasin) {
+        this.magasin = magasin;
+    }
+
     public Magasin getMagasin() {
         return this.magasin;
     }

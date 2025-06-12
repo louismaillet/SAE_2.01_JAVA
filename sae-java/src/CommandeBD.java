@@ -28,4 +28,8 @@ public class CommandeBD {
             pstmt.executeUpdate();
         }
     }
+
+    static void passerCommandeClient(Connection connexion, int idClient, int idmag, long bnCmd, int qteCmd) {
+        throw new UnsupportedOperationException("Not supported yet.");
+    }
 }

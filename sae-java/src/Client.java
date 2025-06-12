@@ -33,6 +33,10 @@ public class Client extends Personne{
     public void addLivre(Livre livre) {
         this.livresDejaAchetes.add(livre);
     }
+
+    public int getDernierIdClient() {
+        return this.getId();
+    }
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -80,4 +84,7 @@ public class Client extends Personne{
 } */
 return new ArrayList<>();
 }
+
+
+
 }
