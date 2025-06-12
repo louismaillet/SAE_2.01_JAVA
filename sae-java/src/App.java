@@ -10,8 +10,8 @@ public class App {
         Scanner scanner = new Scanner(System.in);
 
         try {
-            connexion = new ConnexionMySQL(); // Attempt to establish database connection
-
+            connexion = new ConnexionMySQL(); 
+            connexion.connecter("servinfo-maria", "Librairie", "maillet", "maillet");
             // Check if the connection was successful
             if (connexion.getConnexion() == null) {
                 System.out.println("❌ Erreur : La connexion à la base de données a échoué. Veuillez vérifier les paramètres de connexion.");
