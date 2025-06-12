@@ -45,5 +45,6 @@ class VendeurBD {
             e.printStackTrace();
             return null;
         }
-    }       
+    }    
+    
 }

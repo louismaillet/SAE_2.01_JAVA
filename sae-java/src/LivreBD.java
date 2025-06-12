@@ -3,7 +3,44 @@ import java.util.*;
 
 
 public class LivreBD {
-    public static List<Livre> chargerLivres(Connection connexion) {
+
+
+    public static List<Livre> getLivresAchetesParClient(Connection connexion, int idClient) {
+        List<Livre> livres = new ArrayList<>();
+        String sql = "SELECT * FROM LIVRE " +
+                     "NATURAL JOIN DETAILCOMMANDE " +
+                     "NATURAL JOIN COMMANDE " +
+                     "WHERE idcli = ? " +
+                     "ORDER BY isbn";
+        try (PreparedStatement pstmt = connexion.prepareStatement(sql)) {
+            pstmt.setInt(1, idClient);
+            ResultSet rs = pstmt.executeQuery();
+            while (rs.next()) {
+                long isbn = rs.getLong("isbn");
+                String titre = rs.getString("titre");
+                int nbPages = rs.getInt("nbPages");
+                String datePubli = rs.getString("datePubli");
+                if (datePubli == null) datePubli = "";
+                double prix = rs.getDouble("prix");
+                int quantite = rs.getInt("qte");
+                Livre livre = new Livre(isbn, titre, nbPages, datePubli, prix, quantite);
+                livres.add(livre);
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la récupération des livres achetés par le client : " + e.getMessage());
+        }
+        return livres;
+    }
+
+    
+    
+    
+    
+    
+    
+    
+    
+        public static List<Livre> chargerLivres(Connection connexion) {
         List<Livre> livres = new ArrayList<>();
         try {
             String sql = "SELECT LIVRE.isbn, titre, nbPages, datePubli, prix, SUM(qte) AS quantite_totale FROM LIVRE NATURAL JOIN POSSEDER GROUP BY LIVRE.isbn, titre, nbPages, datePubli, prix ORDER BY LIVRE.isbn";

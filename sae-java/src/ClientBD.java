@@ -1,5 +1,11 @@
 import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class ClientBD {
 
@@ -53,5 +59,45 @@ public class ClientBD {
         
         
     }
-    
+    public static List<Livre> onVousRecommande(Connection connexion, Client client) throws SQLException {
+        Set<Livre> recommandationsUniques = new HashSet<>();
+        Set<Livre> livresAchetesParClientActuel = new HashSet<>(LivreBD.getLivresAchetesParClient(connexion, client.getId()));
+
+        // 1. Trouver les IDs des clients (autres que le client actuel) qui ont acheté des livres
+        Set<Integer> autresClientsIds = new HashSet<>();
+        String sqlSelectAutresClients = "SELECT DISTINCT idcli FROM COMMANDE WHERE idcli != ?";
+        try (PreparedStatement pstmt = connexion.prepareStatement(sqlSelectAutresClients)) {
+            pstmt.setInt(1, client.getId());
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    autresClientsIds.add(rs.getInt("idcli"));
+                }
+            }
+        }
+
+        // 2. Pour chaque autre client, vérifier les livres en commun et collecter les recommandations
+        for (Integer autreClientId : autresClientsIds) {
+            Set<Livre> livresAchetesParAutreClient = new HashSet<>(LivreBD.getLivresAchetesParClient(connexion, autreClientId));
+
+            Set<Livre> livresCommuns = new HashSet<>(livresAchetesParClientActuel);
+            livresCommuns.retainAll(livresAchetesParAutreClient);
+
+            if (!livresCommuns.isEmpty()) {
+                Set<Livre> livresARecommander = new HashSet<>(livresAchetesParAutreClient);
+                livresARecommander.removeAll(livresAchetesParClientActuel);
+                recommandationsUniques.addAll(livresARecommander);
+            }
+            if (recommandationsUniques.size() >= 10) {
+                break;
+            }
+        }
+
+        // Limiter à 5 livres maximum dans la liste retournée
+        List<Livre> recommandationsListe = new ArrayList<>(recommandationsUniques);
+        if (recommandationsListe.size() > 5) {
+            return recommandationsListe.subList(0, 5);
+        } else {
+            return recommandationsListe;
+        }
+    }
 }

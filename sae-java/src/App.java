@@ -17,10 +17,10 @@ public class App {
                 System.out.println("❌ Erreur : La connexion à la base de données a échoué. Veuillez vérifier les paramètres de connexion.");
                 return; // Exit if no database connection
             }
-
+            
             boolean running = true;
             while (running) {
-                EffacerTerminale.clearConsole(); // Clear console before each main menu display
+            
                 System.out.println("╔═════════════════════════════════════╗");
                 System.out.println("║        BIENVENUE DANS LA LIBRAIRIE  ║");
                 System.out.println("╠═════════════════════════════════════╣");
@@ -644,11 +644,19 @@ public class App {
                     System.out.println(nouvelleCommande.editerFacture());
                     break;
                 case "4":
+                    EffacerTerminale.clearConsole();
                     System.out.println("Voici une recommandation de livre :");
                     // Re-commented this line to restore original behavior
                     // Livre livreRecommande = LivreBD.getLivreRecommande(connexion.getConnexion());
                     // Added a placeholder message since the method is commented
-                    System.out.println("Fonctionnalité de recommandation à implémenter.");
+                    List<Livre> recommandations = ClientBD.onVousRecommande(connexion.getConnexion(), currentClient);
+                    if (recommandations.isEmpty()) {
+                        System.out.println("Aucune recommandation disponible pour le moment.");
+                    } else {
+                        for (Livre livre : recommandations) {
+                            System.out.println(livre);
+                        }
+                    }
                     break;
                 case "0":
                     System.out.println("Etes-vous sûr de vouloir quitter le panier sera supprimé ?");
