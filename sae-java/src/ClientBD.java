@@ -49,21 +49,18 @@ public class ClientBD {
                         rs.getString("villecli")
                     );
                 } else {
-                    return null; // Client not found
+                    return null;
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            return null; // Handle exception appropriately
+            return null;
         }
-        
-        
     }
     public static List<Livre> onVousRecommande(Connection connexion, Client client) throws SQLException {
         Set<Livre> recommandationsUniques = new HashSet<>();
         Set<Livre> livresAchetesParClientActuel = new HashSet<>(LivreBD.getLivresAchetesParClient(connexion, client.getId()));
 
-        // 1. Trouver les IDs des clients (autres que le client actuel) qui ont acheté des livres
         Set<Integer> autresClientsIds = new HashSet<>();
         String sqlSelectAutresClients = "SELECT DISTINCT idcli FROM COMMANDE WHERE idcli != ?";
         try (PreparedStatement pstmt = connexion.prepareStatement(sqlSelectAutresClients)) {
@@ -75,7 +72,6 @@ public class ClientBD {
             }
         }
 
-        // 2. Pour chaque autre client, vérifier les livres en commun et collecter les recommandations
         for (Integer autreClientId : autresClientsIds) {
             Set<Livre> livresAchetesParAutreClient = new HashSet<>(LivreBD.getLivresAchetesParClient(connexion, autreClientId));
 
@@ -92,7 +88,6 @@ public class ClientBD {
             }
         }
 
-        // Limiter à 5 livres maximum dans la liste retournée
         List<Livre> recommandationsListe = new ArrayList<>(recommandationsUniques);
         if (recommandationsListe.size() > 5) {
             return recommandationsListe.subList(0, 5);

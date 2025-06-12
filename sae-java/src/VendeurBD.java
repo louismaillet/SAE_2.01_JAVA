@@ -15,7 +15,6 @@ class VendeurBD {
                     String prenomVend = rs.getString("prenomvendeur");
                     int idMag = rs.getInt("idmag");
                     Magasin magasin = MagasinBD.getMagasinParId(connexion, idMag);
-                    // Si tu as un champ "role" dans la table, récupère-le ici, sinon mets RoleVendeur.VENDEUR par défaut
                     return new Vendeur(idVend, nomVend, prenomVend, magasin, RoleVendeur.VENDEUR);
                 } else {
                     return null;
@@ -35,7 +34,6 @@ class VendeurBD {
                 if (rs.next()) {
                     int idMag = rs.getInt("idmag");
                     return MagasinBD.getMagasinParId(connexion, idMag);
-                    // Add other fields if needed
                     
                 } else {
                     return null;

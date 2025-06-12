@@ -6,7 +6,7 @@ import java.sql.Statement;
 public class CommandeBD {
 
     public static int getDernierIdCommande(Connection conn) throws SQLException {
-        String sql = "SELECT MAX(numcom) FROM COMMANDE"; // <-- majuscule et bon nom de colonne
+        String sql = "SELECT MAX(numcom) FROM COMMANDE";
         try (Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
             if (rs.next()) {

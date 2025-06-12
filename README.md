@@ -4,4 +4,20 @@ Maillet Louis
 Belaarous Yassine
 Vingon-chaudey Clement
 Gezault Mateo
-Pour lancer l'application il vous suffit de ./App.sh
+
+
+## Installation
+Pour installer le projet SAE Java, vous devez d'abord cloner le dépôt GitHub. Ouvrez un terminal et exécutez les commandes suivantes :
+
+```bash
+git clone https://github.com/louismaillet/SAE_2.01_JAVA.git
+cd SAE_2.01_JAVA
+```
+Puis, pour lancer l'application, exécutez les commandes suivantes :
+
+```bash
+cd sae-java
+chmod 777 App.sh
+./App.sh
+```
+

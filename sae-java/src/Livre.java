@@ -15,7 +15,6 @@ public class Livre {
         this.prix = prix;
         this.quantite = quantite; 
     }
-    // getteur setteur
     public long getIsbn() {
         return this.isbn;
     }
@@ -53,7 +52,7 @@ public String toString() {
     String isbnFormate = String.format("%-102s", this.isbn);
     String datePubliFormate = String.format("%-87s", this.datePubli);
     String prixFormate = String.format("%-102s", this.prix);
-    String quantiteFormate = String.format("%-98s", this.quantite); // Placeholder for quantity
+    String quantiteFormate = String.format("%-98s", this.quantite);
 
     return "\n" +
         "╔" + "═".repeat(110) + "╗\n" +

@@ -59,32 +59,4 @@ public class Client extends Personne{
         return result;
     }
 
-    public List<Livre> onVousRecommande() {
-        
-    /*
-     public List<Livre> onVousRecommande(Client client) {
-    Set<Livre> livresClient = new HashSet<>(client.getLivresDejaAcheter());
-    Set<Livre> recommandations = new HashSet<>();
-
-    for (Client autreClient : this.listeClients) {
-        if (autreClient.equals(client)) continue;
-        // Vérifie s'il y a au moins un livre en commun
-        Set<Livre> livresAutre = new HashSet<>(autreClient.getLivresDejaAcheter());
-        livresAutre.retainAll(livresClient);
-        if (!livresAutre.isEmpty()) {
-            // Ajoute les livres de l'autre client non possédés par le client cible
-            for (Livre l : autreClient.getLivresDejaAcheter()) {
-                if (!livresClient.contains(l)) {
-                    recommandations.add(l);
-                }
-            }
-        }
-    }
-    return new ArrayList<>(recommandations);
-} */
-return new ArrayList<>();
-}
-
-
-
 }

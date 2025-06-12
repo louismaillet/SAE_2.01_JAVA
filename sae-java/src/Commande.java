@@ -8,7 +8,7 @@ public class Commande{
     private int numcom;
     private LocalDate date;
     private ModeReception modeDeReception;
-    private Magasin magasinLivraison; //id du magasin
+    private Magasin magasinLivraison;
 
     public Commande (int numco, ModeReception modeDeReception){
         this.numcom = numco;
@@ -56,19 +56,19 @@ public class Commande{
         facture += "\nNuméro de commande : " + numcom;
         facture += "\nDate : " + date;
         facture += "\nMode de réception : " + modeDeReception;
-
+        int nombreLivre = 0;
+        double factureTotale = 0.0;
         
-        for (Livre livre : new HashSet<>(listeDesLivresCommande)) {
-            int quantite = Collections.frequency(listeDesLivresCommande, livre);
-            facture += "\n" + livre.toString().replace("Quantité: 0", "Quantité: " + quantite);
-        }
-        facture += "\nTotal livres : " + listeDesLivresCommande.size();
-        double total = 0.0;
         for (Livre livre : listeDesLivresCommande) {
-            total += livre.getPrix();
+            int quantite = livre.getQuantite();
+            facture += "\n" + livre.toString().replace("Quantité: 0", "Quantité: " + quantite);
+            factureTotale += quantite * livre.getPrix();
+            nombreLivre += quantite;
         }
-        total = Math.round(total * 100.00) / 100.00;
-        facture += "\nTotal facture : " + total + " €";
+        
+        facture += "\nTotal livres : " + nombreLivre;
+        factureTotale = Math.round(factureTotale * 100.00) / 100.00;
+        facture += "\nTotal facture : " + factureTotale + " €";
 
         
         facture += "\n-------------------------------------------------------------------";
@@ -100,5 +100,11 @@ public class Commande{
         hash = 27 * hash + modeDeReception.hashCode();
         hash = 27 * hash + listeDesLivresCommande.hashCode();
         return hash;
+    }
+
+    public void ajouterLivreACommande(Livre livreAchete, int quantite) {
+        
+        livreAchete.setQuantite(quantite);
+        this.listeDesLivresCommande.add(livreAchete);
     }
 }

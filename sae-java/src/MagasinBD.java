@@ -54,12 +54,12 @@ public class MagasinBD {
         return quantite;
     }
 
-    static void setQuantiteLivre(Connection connexion, int idmag, long bnLivre, int nouvelleQuantite) {
+    static void setQuantiteLivre(Connection connexion, int idmag, long isbnLivre, int nouvelleQuantite) {
         String sql = "UPDATE POSSEDER SET qte = ? WHERE idmag = ? AND isbn = ?";
         try (PreparedStatement pstmt = connexion.prepareStatement(sql)) {
             pstmt.setInt(1, nouvelleQuantite);
             pstmt.setInt(2, idmag);
-            pstmt.setLong(3, bnLivre);
+            pstmt.setLong(3, isbnLivre);
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Erreur lors de la mise à jour de la quantité de livre : " + e.getMessage());
