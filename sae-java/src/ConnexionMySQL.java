@@ -40,6 +40,7 @@ public class ConnexionMySQL {
         return this.mysql.prepareStatement(requete);
     }
     public Connection getConnexion() {
-    return this.mysql; // ou le nom de ton attribut Connection
+    return this.mysql;
 }
+    
 }
