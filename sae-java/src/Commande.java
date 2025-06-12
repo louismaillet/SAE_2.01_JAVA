@@ -8,14 +8,14 @@ public class Commande{
     private int numcom;
     private LocalDate date;
     private ModeReception modeDeReception;
-    private String magasinLivraison;
+    private Magasin magasinLivraison; //id du magasin
 
     public Commande (int numco, ModeReception modeDeReception){
         this.numcom = numco;
         this.date = LocalDate.now();
         this.modeDeReception = modeDeReception;
         this.listeDesLivresCommande = new ArrayList<>();
-        ma
+        this.magasinLivraison = new Magasin(1, "null", "null"); 
 
     }
 
@@ -24,7 +24,14 @@ public class Commande{
         this.date = LocalDate.now();
         this.modeDeReception = ModeReception.LIVRAISON;
         this.listeDesLivresCommande = new ArrayList<>();
+        this.magasinLivraison = new Magasin(1, "null", "null");
     }
+
+    public void setMagasinRetrait(Magasin magasin) {
+        this.magasinLivraison = magasin;
+    }
+
+
     public void setNumcom(Connection conn) throws SQLException {
         this.numcom = CommandeBD.getDernierIdCommande(conn) + 1;
     }

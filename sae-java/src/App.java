@@ -49,7 +49,6 @@ public class App {
                         break;
                     default:
                         System.out.println("⚠️ Choix invalide. Veuillez entrer un numéro valide.");
-                        promptEnterKey(scanner); // Wait for user acknowledgment
                 }
             }
         } catch (ClassNotFoundException e) {
@@ -247,11 +246,7 @@ public class App {
         }
     }
 
-    /**
-     * Displays the seller menu and handles seller actions.
-     * @param scanner The Scanner object for user input.
-     * @param connexion The database connection object.
-     */
+    
     private static void menuVendeur(Scanner scanner, ConnexionMySQL2 connexion) {
         EffacerTerminale.clearConsole();
         boolean vendeurRunning = true;
@@ -283,17 +278,29 @@ public class App {
         while (vendeurRunning) {
             System.out.println("Bonjour "+ vendeur.getNom() + " " + vendeur.getPrenom());
             System.out.println("--- Menu Vendeur ---");
-            System.out.println("1. Ajouter un livre");
-            System.out.println("2. Supprimer un livre");
-            System.out.println("3. Gérer le stock de livres");
-            System.out.println("4. Acheter un livre pour un client");
-            System.out.println("5. Vérifier la disponibilité d’un livre");
+            System.out.println("1. Voir les livres de la librairie " + vendeur.getMagasin().getNommag());
+            System.out.println("2. Ajouter un livre");
+            System.out.println("3. Supprimer un livre");
+            System.out.println("4. Gérer le stock de livres");
+            System.out.println("5. Acheter un livre pour un client");
+            System.out.println("6. Vérifier la disponibilité d’un livre");
             System.out.println("0. Retour");
             System.out.print("Votre choix: ");
             String choix = scanner.nextLine();
             switch (choix) {
-
                 case "1":
+                    EffacerTerminale.clearConsole();
+                    System.out.println("Liste des livres dans la librairie " + vendeur.getMagasin().getNommag() + ":");
+                    List<Livre> livres = LivreBD.chargerLivresParMagasin(connexion.getConnexion(), vendeur.getMagasin().getIdmag());
+                    if (livres.isEmpty()) {
+                        System.out.println("Aucun livre trouvé dans cette librairie.");
+                    } else {
+                        for (Livre l : livres) {
+                            System.out.println(l);
+                        }
+                    }
+                    break;
+                case "2":
                     EffacerTerminale.clearConsole();
                     System.out.println("Ajouter un livre");
                     System.out.println("Entrez le nom du livre :");
@@ -324,7 +331,7 @@ public class App {
                     long nouvelIsbn = LivreBD.getDernierISBN(connexion.getConnexion()) + 1;
                     Livre livre = new Livre(nouvelIsbn, nomLivre, nbPages, datePubli, prix, 0);
                     try {
-                        LivreBD.ajouterLivre(connexion.getConnexion(), livre);
+                        LivreBD.ajouterLivre(connexion.getConnexion(), livre, vendeur.getMagasin().getIdmag());
                         EffacerTerminale.clearConsole();
                         System.out.println("✅ Livre ajouté avec succès (ISBN généré : " + nouvelIsbn + ").");
                     } catch (Exception e) {
@@ -332,7 +339,7 @@ public class App {
                         System.out.println("❌ Erreur lors de l'ajout du livre : " + e.getMessage());
                     }
                     break;
-                case "2":
+                case "3":
                     EffacerTerminale.clearConsole();
                     System.out.println("Suppression de livre");
                     System.out.println("Entrez l'ISBN du livre à supprimer :");
@@ -340,7 +347,7 @@ public class App {
                     try {
                         isbnASupprimer = scanner.nextLong();
                         scanner.nextLine();
-                        LivreBD.supprimerLivre(connexion.getConnexion(), isbnASupprimer);
+                        MagasinBD.supprimerLivreMagasin(connexion.getConnexion(), isbnASupprimer, vendeur.getMagasin().getIdmag());
                         EffacerTerminale.clearConsole();
                         System.out.println("✅ Livre supprimé avec succès.");
                     } catch (InputMismatchException e) {
@@ -350,7 +357,7 @@ public class App {
                         System.out.println("❌ Erreur lors de la suppression du livre : " + e.getMessage());
                     }
                     break;
-                case "3":
+                case "4":
                     EffacerTerminale.clearConsole();
                     System.out.println("Gérer le stock de livres");
                     System.out.println("Entrez l'ISBN du livre à gérer :");
@@ -397,7 +404,7 @@ public class App {
                     EffacerTerminale.clearConsole();
                     System.out.println("✅ Stock mis à jour avec succès.");
                     break;
-            case "4":
+                case "5":
             // Passer une commande pour un client en magasin
             System.out.println("Entrez l'ID du client :");
             int idClient = scanner.nextInt();
@@ -413,7 +420,7 @@ public class App {
             System.out.println("✅ Commande passée pour le client.");
             break;
 
-            case "5":
+                case "6":
             // Vérifier la disponibilité d’un livre dans la librairie
             System.out.println("Entrez l'ISBN du livre à vérifier :");
             long isbnVerif = scanner.nextLong();
@@ -434,12 +441,7 @@ public class App {
         }
     }
 
-    /**
-     * Displays the client menu and handles client actions.
-     * @param scanner The Scanner object for user input.
-     * @param connexion The database connection object.
-     * @throws SQLException If a database access error occurs.
-     */
+    
     private static void menuClient(Scanner scanner, ConnexionMySQL2 connexion) throws SQLException {
         EffacerTerminale.clearConsole();
         Client currentClient = null;
@@ -496,7 +498,6 @@ public class App {
                 }
             } else {
                 System.out.println("⚠️ Choix invalide.");
-                promptEnterKey(scanner);
                 return; // Exit client menu if invalid initial choice
             }
         }
@@ -510,12 +511,13 @@ public class App {
             return;
         }
         boolean modeReceptionRunning = true;
+        ModeReception modeReception = null;
+        Magasin magasinChoisi = null;
         while (modeReceptionRunning){
         System.out.println("Choisissez le mode de réception :");
         System.out.println("1. Livraison");
         System.out.println("2. Retrait en magasin");
         String modeReceptionStr = scanner.nextLine();
-        ModeReception modeReception = ModeReception.LIVRAISON; 
         switch (modeReceptionStr) {
             case "1":
                 System.out.println("Mode de réception : Livraison");
@@ -536,14 +538,19 @@ public class App {
                 try {
                     idMagasin = scanner.nextInt();
                     scanner.nextLine(); // Consommer le retour à la ligne
-                    Magasin magasinChoisi = MagasinBD.getMagasinParId(connexion.getConnexion(), idMagasin);
+                    magasinChoisi = MagasinBD.getMagasinParId(connexion.getConnexion(), idMagasin);
+                    EffacerTerminale.clearConsole();
+
                     if (magasinChoisi == null) {
                         System.out.println("❌ Magasin introuvable, commande annulée.");
                         return;
                     }
+
                     System.out.println("Vous avez choisi : " + magasinChoisi.getNommag() + " (" + magasinChoisi.getVillemag() + ")");
                     nouvelleCommande.setMagasinRetrait(magasinChoisi); // Set the chosen store for pickup
                 } catch (InputMismatchException e) {
+                    EffacerTerminale.clearConsole();
+
                     System.out.println("❌ Saisie invalide. Veuillez entrer un nombre entier pour l'ID du magasin.");
                     scanner.nextLine();
                     System.out.println("Magasin introuvable, commande annulée.");
@@ -551,6 +558,7 @@ public class App {
                 }
                 break;
             default:
+                EffacerTerminale.clearConsole();
                 System.out.println("❌ Veuillez choisir un mode de réception valide (1 ou 2).");
                 return; 
                 
@@ -660,12 +668,5 @@ public class App {
         }
     }
 
-    /**
-     * Utility method to pause execution and wait for user to press Enter.
-     * @param scanner The Scanner object for user input.
-     */
-    private static void promptEnterKey(Scanner scanner) {
-        System.out.println("\nAppuyez sur ENTRÉE pour continuer...");
-        scanner.nextLine(); // Wait for user to press Enter
-    }
+    
 }

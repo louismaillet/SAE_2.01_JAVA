@@ -111,5 +111,53 @@ public class LivreBD {
         return null;
     }
 
+    public static void ajouterLivre(Connection connexion, Livre livre, int idmag) {
+        String sqlLivre = "INSERT INTO LIVRE (isbn, titre, nbPages, datePubli, prix) VALUES (?, ?, ?, ?, ?)";
+        String sqlPosseder = "INSERT INTO POSSEDER (isbn, idmag, qte) VALUES (?, ?, ?)";
+        try {
+            // Désactiver l'auto-commit pour la transaction
+            connexion.setAutoCommit(false);
+
+            // Ajouter le livre dans LIVRE
+            try (PreparedStatement pstmtLivre = connexion.prepareStatement(sqlLivre)) {
+                pstmtLivre.setLong(1, livre.getIsbn());
+                pstmtLivre.setString(2, livre.getTitre());
+                pstmtLivre.setInt(3, livre.getNbPages());
+                pstmtLivre.setString(4, livre.getDatePubli());
+                pstmtLivre.setDouble(5, livre.getPrix());
+                pstmtLivre.executeUpdate();
+            } catch (SQLException e) {
+                // Si le livre existe déjà, ignorer l'erreur (clé primaire)
+                if (!e.getSQLState().equals("23505")) { // 23505 = violation de contrainte d'unicité (PostgreSQL)
+                    throw e;
+                }
+            }
+
+            // Ajouter la relation dans POSSEDER
+            try (PreparedStatement pstmtPosseder = connexion.prepareStatement(sqlPosseder)) {
+                pstmtPosseder.setLong(1, livre.getIsbn());
+                pstmtPosseder.setInt(2, idmag);
+                pstmtPosseder.setInt(3, livre.getQuantite());
+                pstmtPosseder.executeUpdate();
+            }
+
+            // Valider la transaction
+            connexion.commit();
+        } catch (SQLException e) {
+            try {
+                connexion.rollback();
+            } catch (SQLException ex) {
+                System.out.println("Erreur lors du rollback : " + ex.getMessage());
+            }
+            System.out.println("Erreur lors de l'ajout du livre avec magasin : " + e.getMessage());
+        } finally {
+            try {
+                connexion.setAutoCommit(true);
+            } catch (SQLException e) {
+                System.out.println("Erreur lors de la remise de l'auto-commit : " + e.getMessage());
+            }
+        }
+    }
+
 
 }

@@ -40,13 +40,13 @@ public class MagasinBD {
 
     public static int getQuantiteLivre(Connection connexion, int idmag, long bnVerif) {
         int quantite = 0;
-        String sql = "SELECT quantite FROM STOCK WHERE idmag = ? AND isbn = ?";
+        String sql = "SELECT qte FROM POSSEDER NATURAL JOIN MAGASIN WHERE idmag = ? AND isbn = ?";
         try (PreparedStatement pstmt = connexion.prepareStatement(sql)) {
             pstmt.setInt(1, idmag);
             pstmt.setLong(2, bnVerif);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
-                quantite = rs.getInt("quantite");
+                quantite = rs.getInt("qte");
             }
         } catch (SQLException e) {
             System.out.println("Erreur lors de la récupération de la quantité de livre : " + e.getMessage());
@@ -55,7 +55,7 @@ public class MagasinBD {
     }
 
     static void setQuantiteLivre(Connection connexion, int idmag, long bnLivre, int nouvelleQuantite) {
-        String sql = "UPDATE POSSEDER SET quantite = ? WHERE idmag = ? AND isbn = ?";
+        String sql = "UPDATE POSSEDER SET qte = ? WHERE idmag = ? AND isbn = ?";
         try (PreparedStatement pstmt = connexion.prepareStatement(sql)) {
             pstmt.setInt(1, nouvelleQuantite);
             pstmt.setInt(2, idmag);
@@ -63,6 +63,16 @@ public class MagasinBD {
             pstmt.executeUpdate();
         } catch (SQLException e) {
             System.out.println("Erreur lors de la mise à jour de la quantité de livre : " + e.getMessage());
+        }
+    }
+    public static void supprimerLivreMagasin(Connection connexion, long isbn, int idmag) {
+        String sql = "DELETE FROM POSSEDER WHERE isbn = ? AND idmag = ?";
+        try (PreparedStatement pstmt = connexion.prepareStatement(sql)) {
+            pstmt.setLong(1, isbn);
+            pstmt.setInt(2, idmag);
+            pstmt.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la suppression du livre : " + e.getMessage());
         }
     }
 
