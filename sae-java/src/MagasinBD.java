@@ -77,4 +77,19 @@ public class MagasinBD {
     }
 
 
+    public static boolean transfererLivreEntreMagasins(Connection connexion, long isbn, int idMagSource, int idMagCible, int quantite) throws SQLException {
+        int stockSource = getQuantiteLivre(connexion, idMagSource, isbn);
+        if (stockSource < quantite) {
+            return false;
+        }
+        setQuantiteLivre(connexion, idMagSource, isbn, stockSource - quantite);
+
+        int stockCible = getQuantiteLivre(connexion, idMagCible, isbn);
+        setQuantiteLivre(connexion, idMagCible, isbn, stockCible + quantite);
+
+        return true;
+    }
+
+
+
 }
