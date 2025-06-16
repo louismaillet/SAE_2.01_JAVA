@@ -12,6 +12,6 @@ public class ControleurRetourAccueil implements EventHandler<ActionEvent> {
 
     @Override
     public void handle(ActionEvent event) {
-        controleurPrincipal.afficherAccueil();
+        controleurPrincipal.afficherAccueilClient();
     }
 }

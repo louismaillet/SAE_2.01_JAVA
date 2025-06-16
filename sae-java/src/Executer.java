@@ -6,8 +6,7 @@ import javafx.stage.Stage;
 public class Executer extends Application {
     @Override
     public void start(Stage primaryStage) {
-        ControleurPrincipal controleur = new ControleurPrincipal(primaryStage);
-        controleur.afficherAccueil();
+        
         primaryStage.setTitle("Application");
         primaryStage.show();
     }

@@ -1,5 +1,12 @@
+package controleur;
+
+import vue.VueAccueilClient;
+import vue.VueConsulterPanier;
+import vue.VuePasserCommande;
+import vue.VueConnexionClient;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+
 
 public class ControleurPrincipal {
     private Stage primaryStage;
@@ -8,18 +15,19 @@ public class ControleurPrincipal {
         this.primaryStage = stage;
     }
 
-    public void afficherAccueil() {
-        Accueil vue = new Accueil(this);
+    public void afficherAccueilClient() {
+        VueAccueilClient vue = new VueAccueilClient(this);
         primaryStage.setScene(new Scene(vue, 800, 500));
     }
 
     public void afficherPasserCommande() {
-        PasserCommande vue = new PasserCommande(this);
+        VuePasserCommande vue = new VuePasserCommande(this);
         primaryStage.setScene(new Scene(vue, 800, 500));
     }
 
     public void afficherConsulterPanier() {
-        ConsulterPanier vue = new ConsulterPanier(this);
+        VueConsulterPanier vue = new VueConsulterPanier(this);
         primaryStage.setScene(new Scene(vue, 800, 500));
     }
+
 }

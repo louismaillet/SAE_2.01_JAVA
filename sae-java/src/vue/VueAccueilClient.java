@@ -1,3 +1,8 @@
+package vue;
+
+import controleur.ControleurPrincipal;
+import controleur.ControleurPasserCommande;
+import controleur.ControleurConsulterPanier;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -5,8 +10,8 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 
-public class VueAccueil extends BorderPane {
-    public VueAccueil(ControleurPrincipal controleur) {
+public class VueAccueilClient extends BorderPane {
+    public VueAccueilClient(ControleurPrincipal controleur) {
         super();
 
         Label bonjour = new Label("Bonjour + faudra mettre le blaze du pelo !");
