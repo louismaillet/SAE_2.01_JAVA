@@ -2,8 +2,8 @@
 SAÉ 2.01 : Développement d’une application – Projet Librairies – 
 Maillet Louis
 Belaarous Yassine
-Vingon-chaudey Clement
-Gezault Mateo
+Vignon Chaudey Clément
+Gezault Matéo
 
 
 ## Installation
@@ -20,4 +20,6 @@ cd sae-java
 chmod 777 App.sh
 ./App.sh
 ```
+
+Voici le lien vers le dépôt GitHub : [Github Sae Java](https://github.com/louismaillet/SAE_2.01_JAVA)
 

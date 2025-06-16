@@ -90,7 +90,7 @@ public class ClientBD {
 
         List<Livre> recommandationsListe = new ArrayList<>(recommandationsUniques);
         if (recommandationsListe.size() > 5) {
-            return recommandationsListe.subList(0, 5);
+            return recommandationsListe.subList(0, 5); // la methode sublist retourne les 5 premiers livres nouvelle methode apprise !
         } else {
             return recommandationsListe;
         }
