@@ -11,7 +11,8 @@ import java.util.Set;
 public class ClientBD {
 
     public static void ajouterClient(Connection conn, Client client) throws SQLException {
-        String sql = "INSERT INTO CLIENT (idcli, nomcli, prenomcli, adressecli, codepostal, villecli) VALUES (?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO CLIENT (idcli, nomcli, prenomcli, adressecli, "+
+                      "codepostal, villecli) VALUES (?, ?, ?, ?, ?, ?)";
         try (var pstmt = conn.prepareStatement(sql)) {
             pstmt.setInt(1, client.getId());
             pstmt.setString(2, client.getNom());
@@ -31,12 +32,12 @@ public class ClientBD {
                 if (rs.next()) {
                     return rs.getInt("codepostal");
                 } else {
-                    return 0; // ou une valeur par défaut appropriée
+                    return 0; 
                 }
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            return 0; // ou une valeur par défaut appropriée
+            return 0;
         }
     }
 

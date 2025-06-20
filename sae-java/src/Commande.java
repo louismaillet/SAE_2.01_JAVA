@@ -61,22 +61,22 @@ public class Commande{
         String facture = "-------------------------------------------------------------------";
 
 
-        facture += "\nNumÃ©ro de commande : " + numcom;
+        facture += "\nNuméro de commande : " + numcom;
         facture += "\nDate : " + date;
-        facture += "\nMode de rÃ©ception : " + modeDeReception;
+        facture += "\nMode de réception : " + modeDeReception;
         int nombreLivre = 0;
         double factureTotale = 0.0;
         
         for (Livre livre : listeDesLivresCommande) {
             int quantite = livre.getQuantite();
-            facture += "\n" + livre.toString().replace("QuantitÃ©: 0", "QuantitÃ©: " + quantite);
+            facture += "\n" + livre.toString().replace("Quantité: 0", "Quantité: " + quantite);
             factureTotale += quantite * livre.getPrix();
             nombreLivre += quantite;
         }
         
         facture += "\nTotal livres : " + nombreLivre;
         factureTotale = Math.round(factureTotale * 100.00) / 100.00;
-        facture += "\nTotal facture : " + factureTotale + " â¬";
+        facture += "\nTotal facture : " + factureTotale + " €";
 
         
         facture += "\n-------------------------------------------------------------------";
