@@ -44,6 +44,12 @@ Pour vous connecter en tant qu'administrateur, utilisez le mot de passe suivant 
 - **Mot de passe** : `licornebleueapoisrouge`
 
 
+## Manuel d'utilisation et dossier d'analyse
+
+Pour utiliser l'application en tant qu'utilisateur, vous pouvez consulter le manuel d'utilisation disponible dans le dossier Rapport et video. Ce manuel vous aidera à naviguer dans l'application.
+
+Vous pouvez également consulter le dossier d'analyse pour obtenir des informations détaillées sur la conception et l'architecture de l'application.
+
 ## Lien GitHub
 
 Voici le lien vers le dépôt GitHub : [Github Sae Java](https://github.com/louismaillet/SAE_2.01_JAVA)
