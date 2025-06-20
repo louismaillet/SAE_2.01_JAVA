@@ -1,3 +1,4 @@
+package src;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
@@ -31,6 +32,9 @@ public class Commande{
         this.magasinLivraison = magasin;
     }
 
+    public ModeReception getModeDeReception() {
+        return modeDeReception;
+    }
 
     public void setNumcom(Connection conn) throws SQLException {
         this.numcom = CommandeBD.getDernierIdCommande(conn) + 1;
@@ -48,27 +52,31 @@ public class Commande{
         listeDesLivresCommande.add(livre);
     }
 
+    public List<Livre> getListeDesLivresCommande() {
+        return listeDesLivresCommande;
+    }
+
     public String editerFacture(){
 
         String facture = "-------------------------------------------------------------------";
 
 
-        facture += "\nNuméro de commande : " + numcom;
+        facture += "\nNumÃ©ro de commande : " + numcom;
         facture += "\nDate : " + date;
-        facture += "\nMode de réception : " + modeDeReception;
+        facture += "\nMode de rÃ©ception : " + modeDeReception;
         int nombreLivre = 0;
         double factureTotale = 0.0;
         
         for (Livre livre : listeDesLivresCommande) {
             int quantite = livre.getQuantite();
-            facture += "\n" + livre.toString().replace("Quantité: 0", "Quantité: " + quantite);
+            facture += "\n" + livre.toString().replace("QuantitÃ©: 0", "QuantitÃ©: " + quantite);
             factureTotale += quantite * livre.getPrix();
             nombreLivre += quantite;
         }
         
         facture += "\nTotal livres : " + nombreLivre;
         factureTotale = Math.round(factureTotale * 100.00) / 100.00;
-        facture += "\nTotal facture : " + factureTotale + " €";
+        facture += "\nTotal facture : " + factureTotale + " â¬";
 
         
         facture += "\n-------------------------------------------------------------------";
@@ -107,4 +115,19 @@ public class Commande{
         livreAchete.setQuantite(quantite);
         this.listeDesLivresCommande.add(livreAchete);
     }
+
+    public Magasin getMagasin() {
+        return magasinLivraison;
+    }
+
+    public int getQuantiteLivreDansPanier(long isbn) {
+        int quantite = 0;
+        for (Livre livre : listeDesLivresCommande) {
+            if (livre.getIsbn() == isbn) {
+                quantite += livre.getQuantite();
+            }
+        }
+        return quantite;
+    }
+    
 }

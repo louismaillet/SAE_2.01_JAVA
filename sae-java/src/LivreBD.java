@@ -1,3 +1,4 @@
+package src;
 import java.sql.*;
 import java.util.*;
 
@@ -11,7 +12,7 @@ public class LivreBD {
                      "NATURAL JOIN DETAILCOMMANDE " +
                      "NATURAL JOIN COMMANDE " +
                      "WHERE idcli = ? " +
-                     "ORDER BY isbn";
+                     "ORDER BY titre";
         try (PreparedStatement pstmt = connexion.prepareStatement(sql)) {
             pstmt.setInt(1, idClient);
             ResultSet rs = pstmt.executeQuery();
@@ -19,8 +20,7 @@ public class LivreBD {
                 long isbn = rs.getLong("isbn");
                 String titre = rs.getString("titre");
                 int nbPages = rs.getInt("nbPages");
-                String datePubli = rs.getString("datePubli");
-                if (datePubli == null) datePubli = "";
+                int datePubli = rs.getInt("datePubli");
                 double prix = rs.getDouble("prix");
                 int quantite = rs.getInt("qte");
                 Livre livre = new Livre(isbn, titre, nbPages, datePubli, prix, quantite);
@@ -35,14 +35,14 @@ public class LivreBD {
     public static List<Livre> chargerLivres(Connection connexion) {
         List<Livre> livres = new ArrayList<>();
         try {
-            String sql = "SELECT LIVRE.isbn, titre, nbPages, datePubli, prix, SUM(qte) AS quantite_totale FROM LIVRE NATURAL JOIN POSSEDER GROUP BY LIVRE.isbn, titre, nbPages, datePubli, prix ORDER BY LIVRE.isbn";
+            String sql = "SELECT LIVRE.isbn, titre, nbPages, datePubli, prix, SUM(qte) AS quantite_totale FROM LIVRE NATURAL JOIN POSSEDER GROUP BY isbn, titre, nbPages, datePubli, prix ORDER BY titre";
             Statement st = connexion.createStatement();
             ResultSet rs = st.executeQuery(sql);
             while (rs.next()) {
                 long isbn = rs.getLong("isbn");
                 String titre = rs.getString("titre");
                 int nbPages = rs.getInt("nbPages");
-                String datePubli = rs.getString("datePubli");
+                int datePubli = rs.getInt("datePubli");
                 double prix = rs.getDouble("prix");
                 int quantite = rs.getInt("quantite_totale");
                 Livre livre = new Livre(isbn, titre, nbPages, datePubli, prix, quantite);
@@ -56,7 +56,7 @@ public class LivreBD {
 
     public static List<Livre> chargerLivresParMagasin(Connection connexion, int idmag) {
         List<Livre> livres = new ArrayList<>();
-        String sql = "SELECT LIVRE.isbn, titre, nbPages, datePubli, prix, POSSEDER.qte FROM LIVRE NATURAL JOIN POSSEDER WHERE idmag = ? ORDER BY LIVRE.isbn";
+        String sql = "SELECT LIVRE.isbn, titre, nbPages, datePubli, prix, POSSEDER.qte FROM LIVRE NATURAL JOIN POSSEDER WHERE idmag = ? ORDER BY titre";
         try (PreparedStatement pstmt = connexion.prepareStatement(sql)) {
             pstmt.setInt(1, idmag);
             ResultSet rs = pstmt.executeQuery();
@@ -64,7 +64,7 @@ public class LivreBD {
                 long isbn = rs.getLong("isbn");
                 String titre = rs.getString("titre");
                 int nbPages = rs.getInt("nbPages");
-                String datePubli = rs.getString("datePubli");
+                int datePubli = rs.getInt("datePubli");
                 double prix = rs.getDouble("prix");
                 int quantite = rs.getInt("qte");
                 Livre livre = new Livre(isbn, titre, nbPages, datePubli, prix, quantite);
@@ -82,7 +82,7 @@ public class LivreBD {
             pstmt.setLong(1, livre.getIsbn());
             pstmt.setString(2, livre.getTitre());
             pstmt.setInt(3, livre.getNbPages());
-            pstmt.setString(4, livre.getDatePubli());
+            pstmt.setInt(4, livre.getDatePubli());
             pstmt.setDouble(5, livre.getPrix());
             pstmt.executeUpdate();
         } catch (SQLException e) {
@@ -90,17 +90,26 @@ public class LivreBD {
         }
     }
     
-    public static void supprimerLivre(Connection connexion, long isbn) {
-        String sql = "DELETE FROM LIVRE WHERE isbn = ?";
+    public static boolean supprimerLivre(Connection connexion, long isbn, int idmag) {
+        // Suppression du livre du stock du magasin (table POSSEDER)
+        String sql = "DELETE FROM POSSEDER WHERE isbn = ? AND idmag = ?";
         try (PreparedStatement pstmt = connexion.prepareStatement(sql)) {
             pstmt.setLong(1, isbn);
+            pstmt.setInt(2, idmag);
             int affectedRows = pstmt.executeUpdate();
             if (affectedRows == 0) {
-                System.out.println("Aucun livre supprimé (ISBN introuvable).");
+                System.out.println("Aucun livre supprimé pour ce magasin (ISBN ou magasin introuvable).");
+                return false;
             }
+            return true;
         } catch (SQLException e) {
-            System.out.println("Erreur lors de la suppression du livre : " + e.getMessage());
+            if (e.getErrorCode() == 1451) {
+                System.out.println("Impossible de supprimer ce livre pour ce magasin : il est encore utilisé dans une commande (contrainte d'intégrité).");
+            } else {
+                System.out.println("Erreur lors de la suppression du livre pour ce magasin : " + e.getMessage());
+            }
         }
+        return false;
     }
 
     public static long getDernierISBN(Connection connexion) {
@@ -120,16 +129,16 @@ public class LivreBD {
 
     public static Livre getLivreParISBN(Connection connexion, long isbn) {
         String sql = "SELECT LIVRE.isbn, titre, nbPages, datePubli, prix, SUM(qte) AS qte " +
-                 "FROM LIVRE NATURAL JOIN POSSEDER " +
-                 "WHERE LIVRE.isbn = ? " +
-                 "GROUP BY LIVRE.isbn, titre, nbPages, datePubli, prix";
+                     "FROM LIVRE NATURAL JOIN POSSEDER " +
+                     "WHERE LIVRE.isbn = ? " +
+                     "GROUP BY LIVRE.isbn, titre, nbPages, datePubli, prix";
         try (PreparedStatement pstmt = connexion.prepareStatement(sql)) {
             pstmt.setLong(1, isbn);
             ResultSet rs = pstmt.executeQuery();
             if (rs.next()) {
                 String titre = rs.getString("titre");
                 int nbPages = rs.getInt("nbPages");
-                String datePubli = rs.getString("datePubli");
+                int datePubli = rs.getInt("datePubli");
                 double prix = rs.getDouble("prix");
                 int quantite = rs.getInt("qte");
                 Livre livre = new Livre(isbn, titre, nbPages, datePubli, prix, quantite);
@@ -156,7 +165,7 @@ public class LivreBD {
             if (rs.next()) {
                 String titre = rs.getString("titre");
                 int nbPages = rs.getInt("nbPages");
-                String datePubli = rs.getString("datePubli");
+                int datePubli = rs.getInt("datePubli");
                 double prix = rs.getDouble("prix");
                 int quantite = rs.getInt("qte");
                 Livre livre = new Livre(isbn, titre, nbPages, datePubli, prix, quantite);
@@ -181,7 +190,7 @@ public class LivreBD {
                 pstmt.setLong(1, livre.getIsbn());
                 pstmt.setString(2, livre.getTitre());
                 pstmt.setInt(3, livre.getNbPages());
-                pstmt.setString(4, livre.getDatePubli());
+                pstmt.setInt(4, livre.getDatePubli());
                 pstmt.setDouble(5, livre.getPrix());
                 pstmt.executeUpdate();
             } catch (SQLException e) {
@@ -248,5 +257,46 @@ public class LivreBD {
     }
 
 
+    public static void ajouterLivreAMagasin(Connection connexion, Livre livre, int idmag) {
+        String sqlLivre = "INSERT INTO LIVRE (isbn, titre, nbPages, datePubli, prix) VALUES (?, ?, ?, ?, ?)";
+        String sqlPosseder = "INSERT INTO POSSEDER (isbn, idmag, qte) VALUES (?, ?, ?)";
+        try {
+            connexion.setAutoCommit(false);
+
+            // Ajouter le livre à la table LIVRE (s'il n'existe pas déjà)
+            try (PreparedStatement pstmt = connexion.prepareStatement(sqlLivre)) {
+                pstmt.setLong(1, livre.getIsbn());
+                pstmt.setString(2, livre.getTitre());
+                pstmt.setInt(3, livre.getNbPages());
+                pstmt.setInt(4, livre.getDatePubli());
+                pstmt.setDouble(5, livre.getPrix());
+                pstmt.executeUpdate();
+            } catch (SQLException e) {
+                if (!e.getMessage().contains("duplicate") && !e.getMessage().contains("UNIQUE")) {
+                    System.out.println("Erreur lors de l'ajout du livre à la librairie : " + e.getMessage());
+                }
+            }
+            try (PreparedStatement pstmt = connexion.prepareStatement(sqlPosseder)) {
+                pstmt.setLong(1, livre.getIsbn());
+                pstmt.setInt(2, idmag);
+                pstmt.setInt(3, livre.getQuantite());
+                pstmt.executeUpdate();
+            }
+            connexion.commit();
+        } catch (SQLException e) {
+            try {
+                connexion.rollback();
+            } catch (SQLException ex) {
+                System.out.println("Erreur lors du rollback : " + ex.getMessage());
+            }
+            System.out.println("Erreur lors de l'ajout du livre au magasin et à la librairie : " + e.getMessage());
+        } finally {
+            try {
+                connexion.setAutoCommit(true);
+            } catch (SQLException e) {
+                System.out.println("Erreur lors de la remise de l'auto-commit : " + e.getMessage());
+            }
+        }
+    }
 
 }

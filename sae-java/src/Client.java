@@ -1,3 +1,4 @@
+package src;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +15,13 @@ public class Client extends Personne{
         this.codepostal = codepostal;
         this.villecli = villecli;
         this.livresDejaAchetes = new ArrayList<>();
+    }
+
+    public String getNomcli() {
+        return this.nom;
+    }
+    public String getPrenomcli() {
+        return this.prenom;
     }
 
     public String getAdressecli() {

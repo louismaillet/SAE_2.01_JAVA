@@ -24615,10 +24615,12 @@ insert into DETAILCOMMANDE(numcom, numlig, isbn, qte, prixvente) values
 	(5025,5,9782082005746,1,8.29);
 
 INSERT INTO VENDEUR (idvendeur, nomvendeur, prenomvendeur, idmag) VALUES
-(1, 'Dupont', 'Jean', 1),
-(2, 'Martin', 'Sophie', 2),
-(3, 'Durand', 'Paul', 3),
-(4, 'Bernard', 'Claire', 4),
-(5, 'Petit', 'Luc', 5),
-(6, 'Lefevre', 'Emma', 6),
-(7, 'Moreau', 'Louis', 7);
+(1, 'Maillet', 'Louis', 1),
+(2, 'Belaarous', 'Yassine', 2),
+(3, 'Vignon-Chaudey', 'Clément', 3),
+(4, 'Gezault', 'Matéo', 4),
+(5, 'Dalaigre', 'Christophe', 5),
+(6, 'Léchopier', 'Christophe', 6),
+(7, 'Soare', 'Marta', 7),
+(8, 'Limet', 'Sébastien', 1),
+(9, 'Cleuziou', 'Guillaume', 2);

@@ -1,3 +1,5 @@
+package src;
+
 public class Vendeur extends Personne{
     private Magasin magasin;
     private RoleVendeur role;
@@ -17,13 +19,17 @@ public class Vendeur extends Personne{
         this.magasin = magasin;
     }
 
+    public String getNom() {
+        return this.nom;
+    }
+    
     public Magasin getMagasin() {
         return this.magasin;
     }
     public RoleVendeur getRole() {
         return this.role;
     }
-    public void ajouterLivreStock(int isbn, String titre, String auteur, String editeur, int annee, int prix, int quantite, int nbPages, String datePubli) {
+    public void ajouterLivreStock(long isbn, String titre, String auteur, String editeur, int annee, int prix, int quantite, int nbPages, int datePubli) {
         Livre LivreAjouter = new Livre(isbn,  titre,  nbPages,  datePubli,  prix,  quantite);
         boolean livreExistant = false;
         for (Livre livre : magasin.getListeLivres().keySet()) {

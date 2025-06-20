@@ -1,13 +1,13 @@
-
+package src;
 public class Livre {
     private long isbn;
     private String titre;
     private int nbPages;
-    private String datePubli;
+    private int datePubli;
     private double prix;
     private int quantite;
 
-    public Livre(long isbn, String titre, int nbPages, String datePubli, double prix, int quantite) {
+    public Livre(long isbn, String titre, int nbPages, int datePubli, double prix, int quantite) {
         this.isbn = isbn;
         this.titre = titre;
         this.nbPages = nbPages;
@@ -15,6 +15,7 @@ public class Livre {
         this.prix = prix;
         this.quantite = quantite; 
     }
+
     public long getIsbn() {
         return this.isbn;
     }
@@ -29,7 +30,7 @@ public class Livre {
         return this.nbPages;
     }
 
-    public String getDatePubli() {
+    public int getDatePubli() {
         return this.datePubli;
     }
 
@@ -85,11 +86,11 @@ public String toString() {
             return false;
         }
         Livre tmp = (Livre) obj;
-        return this.titre.equals(tmp.titre) && this.nbPages == tmp.nbPages && this.datePubli.equals(tmp.datePubli) && this.prix == tmp.prix;
+        return this.titre.equals(tmp.titre) && this.nbPages == tmp.nbPages && this.datePubli == tmp.datePubli && this.prix == tmp.prix;
     }
     @Override
     public int hashCode() {
-        return this.titre.hashCode() + this.nbPages + this.datePubli.hashCode() + (int) this.prix;
+        return this.titre.hashCode() + this.nbPages + this.datePubli + (int) this.prix;
     }
 	
 }
