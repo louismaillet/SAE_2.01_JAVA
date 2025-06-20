@@ -1,3 +1,4 @@
+package src;
 
 import java.sql.SQLException;
 import java.util.InputMismatchException;
@@ -5,7 +6,12 @@ import java.util.List;
 import java.util.Scanner;
 
 public class App {
-    public static void main(String[] args) throws SQLException {
+    /**
+     * Point d'entrée de l'application.
+     * Affiche le menu principal et gère la connexion à la base de données.
+     * @param args Les arguments de la ligne de commande (non utilisés).
+     */
+    public static void main(String[] args) {
         EffacerTerminale.clearConsole();
         ConnexionMySQL connexion = null;
         Scanner scanner = new Scanner(System.in);
@@ -17,17 +23,10 @@ public class App {
                 System.out.println("Erreur : La connexion à la base de données a échoué. Veuillez vérifier les paramètres de connexion.");
                 return; 
             }
-        } catch (ClassNotFoundException e) {
-            System.out.println("Erreur : Le pilote JDBC n'a pas pu être chargé. Assurez-vous que le pilote est dans le classpath.");
-            return;
-        } catch (SQLException e) {
-            System.out.println("Erreur : La connexion à la base de données a échoué.");
-            return;
-        }
-
-        boolean running = true;
-        while (running) {
-            System.out.println("╔═════════════════════════════════════╗");
+            
+            boolean running = true;
+            while (running) {
+                System.out.println("╔═════════════════════════════════════╗");
                 System.out.println("║        BIENVENUE DANS LA LIBRAIRIE  ║");
                 System.out.println("╠═════════════════════════════════════╣");
                 System.out.println("║ 1. Administrateur                   ║");
@@ -57,10 +56,23 @@ public class App {
                         System.out.println("Choix invalide. Veuillez entrer un numéro valide.");
                 }
             }
-        
-        
+        } catch (ClassNotFoundException e) {
+            System.err.println("Erreur de pilote JDBC : " + e.getMessage());
+            System.err.println("Assurez-vous que le pilote JDBC est correctement configuré et présent dans le classpath.");
+        } catch (SQLException e) {
+            System.err.println("Erreur de base de données : " + e.getMessage());
+            System.err.println("Veuillez vérifier que la base de données est en ligne et accessible.");
+        } finally {
+            if (scanner != null) {
+                scanner.close();
+            }
+        }
     }
-
+    /**
+     * Affiche le menu administrateur et gère les actions associées.
+     * @param scanner L'objet Scanner pour la saisie utilisateur.
+     * @param connexion La connexion à la base de données.
+     */
     private static void menuAdministrateur(Scanner scanner, ConnexionMySQL connexion) {
         boolean adminRunning = true;
         while (adminRunning) {
@@ -83,9 +95,9 @@ public class App {
                     case "1":
                         EffacerTerminale.clearConsole();
                         System.out.println("--- Création d'un compte vendeur ---");
-                        System.out.print("Nom du vendeur : ");
+                        System.out.print("Nom du vendeur: ");
                         String nomVend = scanner.nextLine();
-                        System.out.print("Prénom du vendeur : ");
+                        System.out.print("Prénom du vendeur: ");
                         String prenomVend = scanner.nextLine();
 
                         System.out.println("\nListe des librairies disponibles:");
@@ -93,7 +105,7 @@ public class App {
                         for (Magasin m : magasins) {
                             System.out.println(m.getIdmag() + " - " + m.getNommag() + " (" + m.getVillemag() + ")");
                         }
-                        System.out.print("Entrez l'ID de la librairie d'affectation : ");
+                        System.out.print("Entrez l'ID de la librairie d'affectation: ");
                         int idMag = Integer.parseInt(scanner.nextLine());
                         Magasin magasinAffecte = MagasinBD.getMagasinParId(connexion.getConnexion(), idMag);
 
@@ -128,7 +140,7 @@ public class App {
                         EffacerTerminale.clearConsole();
                         System.out.println("--- Stocks Globaux de tous les livres ---");
                         List<Livre> stocks = AdministrateurBD.getStocksGlobaux(connexion.getConnexion());
-                        System.out.printf("%-15s | %-40s | %s%n", "ISBN", "Titre", "Quantité en Stock"); // permet juste de faire un entete et les % permet d'unifier les cases
+                        System.out.printf("%-15s | %-40s | %s%n", "ISBN", "Titre", "Quantité en Stock");
                         System.out.println("-".repeat(70));
                         for (Livre l : stocks) {
                             System.out.printf("%-15d | %-40s | %d%n", l.getIsbn(), l.getTitre(), l.getQuantite());
@@ -140,11 +152,11 @@ public class App {
                         System.out.println("--- Statistiques de Vente ---");
                         
                         System.out.println("\nLivres les plus vendus:");
-                        List<String> MeilleurLivre = AdministrateurBD.getLivresPlusVendus(connexion.getConnexion());
-                        if (MeilleurLivre.isEmpty()) {
+                        List<String> bestSellers = AdministrateurBD.getLivresPlusVendus(connexion.getConnexion());
+                        if (bestSellers.isEmpty()) {
                             System.out.println("Aucune vente enregistrée.");
                         } else {
-                            for(String s : MeilleurLivre) {
+                            for(String s : bestSellers) {
                                 System.out.println("- " + s);
                             }
                         }
@@ -178,11 +190,11 @@ public class App {
                                 case "2":
                                     EffacerTerminale.clearConsole();
                                     System.out.println("--- Liste des librairies ---");
-                                    List<Magasin> listeMagasins = MagasinBD.chargerMagasins(connexion.getConnexion());
-                                    if (listeMagasins.isEmpty()) {
+                                    List<Magasin> magasinsData = MagasinBD.chargerMagasins(connexion.getConnexion());
+                                    if (magasinsData.isEmpty()) {
                                         System.out.println("Aucune librairie trouvée.");
                                     } else {
-                                        for (Magasin m : listeMagasins) {
+                                        for (Magasin m : magasinsData) {
                                             System.out.println(m.getIdmag() + " - " + m.getNommag() + " (" + m.getVillemag() + ")");
                                         }
                                     }
@@ -230,8 +242,12 @@ public class App {
             }
         }
     }
-
-    private static void menuVendeur(Scanner scanner, ConnexionMySQL connexion) throws SQLException {
+    /**
+     * Affiche le menu vendeur et gère les actions associées.
+     * @param scanner L'objet Scanner pour la saisie utilisateur.
+     * @param connexion La connexion à la base de données.
+     */
+    private static void menuVendeur(Scanner scanner, ConnexionMySQL connexion) {
         EffacerTerminale.clearConsole();
         boolean vendeurRunning = true;
         System.out.println("Connectez-vous en tant que vendeur.");
@@ -266,7 +282,6 @@ public class App {
             System.out.println("3. Supprimer un livre");
             System.out.println("4. Gérer le stock de livres");
             System.out.println("5. Vérifier la disponibilité d'un livre");
-            System.out.println("6. Transférer un livre entre librairies");
             System.out.println("0. Retour");
             System.out.print("Votre choix: ");
             String choix = scanner.nextLine();
@@ -300,9 +315,16 @@ public class App {
                         break;
                     }
                     System.out.println("Entrez la date de publication :");
-                    String datePubli = scanner.nextLine();
+                    String datePubliStr = scanner.nextLine();
+                    int datePubli;
+                    try {
+                        datePubli = Integer.parseInt(datePubliStr);
+                    } catch (NumberFormatException e) {
+                        System.out.println(" Date de publication invalide, veuillez entrer un nombre entier.");
+                        break;
+                    }
                     System.out.println("Entrez le prix :");
-
+                    
                     String prixStr = scanner.nextLine();
                     double prix;
                     try {
@@ -403,60 +425,6 @@ public class App {
                         System.out.println("Erreur lors de la vérification : " + e.getMessage());
                     }
                     break;
-                
-                
-                case "6":
-
-                EffacerTerminale.clearConsole();
-                System.out.println("Transférer un livre entre librairies");
-                System.out.print("Entrez l'ISBN du livre à transférer : ");
-                long isbnATransferer = 0;
-                try {
-                    isbnATransferer = scanner.nextLong();
-                    scanner.nextLine();
-                } catch (InputMismatchException e) {
-                    System.out.println("Saisie invalide. Veuillez entrer un nombre entier pour l'ISBN.");
-                    scanner.nextLine();
-                    break;
-                }
-                System.out.print("Entrez l'ID de la librairie de destination : ");
-                int idMagDestination = 0;
-                try {
-                    idMagDestination = scanner.nextInt();
-                    scanner.nextLine();
-                } catch (InputMismatchException e) {
-                    System.out.println("Saisie invalide. Veuillez entrer un nombre entier pour l'ID de la librairie.");
-                    scanner.nextLine();
-                    break;
-                }
-                if (idMagDestination == vendeur.getMagasin().getIdmag()) {
-                    System.out.println("Impossible de transférer vers la même librairie.");
-                    break;
-                }
-                System.out.print("Entrez la quantité à transférer : ");
-                int qteATransferer = 0;
-                try {
-                    qteATransferer = scanner.nextInt();
-                    scanner.nextLine();
-                } catch (InputMismatchException e) {
-                    System.out.println("Saisie invalide. Veuillez entrer un nombre entier pour la quantité.");
-                    scanner.nextLine();
-                    break;
-                }
-                int stockDepart = MagasinBD.getQuantiteLivre(connexion.getConnexion(), vendeur.getMagasin().getIdmag(), isbnATransferer);
-                if (stockDepart < qteATransferer) {
-                    System.out.println("Stock insuffisant pour effectuer le transfert.");
-                    break;
-                }
-                boolean transfertOk = MagasinBD.transfererLivreEntreMagasins(connexion.getConnexion(), isbnATransferer,  vendeur.getMagasin().getIdmag(), idMagDestination, qteATransferer);
-
-                if (transfertOk) {
-                    System.out.println("Transfert effectué avec succès.");
-                } else {
-                    System.out.println("Erreur lors du transfert du livre.");
-                }
-
-                break;
                 case "0":
                     vendeurRunning = false;
                     break;
@@ -465,7 +433,11 @@ public class App {
             }
         }
     }
-
+    /**
+     * Affiche le menu client et gère les actions associées.
+     * @param scanner L'objet Scanner pour la saisie utilisateur.
+     * @param connexion La connexion à la base de données.
+     */
     private static void menuClient(Scanner scanner, ConnexionMySQL connexion) throws SQLException {
         EffacerTerminale.clearConsole();
         Client currentClient = null;

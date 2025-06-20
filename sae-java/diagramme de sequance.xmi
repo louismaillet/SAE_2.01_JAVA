@@ -100,7 +100,7 @@
           <UML:Parameter kind="return" xmi.id="uKcgiVA3oHYF5" type="uTXrGd539By5Z"/>
          </UML:BehavioralFeature.parameter>
         </UML:Operation>
-        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="uezx7caFKNsEn" isOverride="false" name="gererStockGlobaux" isInline="false" isVirtual="false"/>
+        <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="uezx7caFKNsEn" isOverride="false" name="ModifierStockGlobaux" isInline="false" isVirtual="false"/>
         <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="uJx0KC8WCS7uu" isOverride="false" name="consulterStatistique" isInline="false" isVirtual="false"/>
         <UML:Operation visibility="public" isSpecification="false" isQuery="false" isAbstract="false" isLeaf="false" isRoot="false" xmi.id="ubV1k5Nsy0TUZ" isOverride="false" name="getListeLivres" isInline="false" isVirtual="false">
          <UML:BehavioralFeature.parameter>

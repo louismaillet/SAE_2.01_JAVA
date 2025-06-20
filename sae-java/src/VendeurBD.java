@@ -1,8 +1,10 @@
+package src;
+
 import java.sql.Connection;
 
 
 
-class VendeurBD {
+public class VendeurBD {
 
     public static Vendeur getVendeurParId(Connection connexion, int idVendeur) {
         String sql = "SELECT * FROM VENDEUR WHERE idvendeur = ?";
@@ -44,5 +46,19 @@ class VendeurBD {
             return null;
         }
     }    
+    public static int getDernierIdVendeur(Connection connexion) {
+        String sql = "SELECT MAX(idvendeur) AS max_id FROM VENDEUR";
+        try (var pstmt = connexion.prepareStatement(sql);
+             var rs = pstmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt("max_id");
+            } else {
+                return 0; // Aucun vendeur trouvé
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return 0; // En cas d'erreur, retourne 0
+        }
+    }
     
 }

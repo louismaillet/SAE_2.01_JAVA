@@ -1,3 +1,5 @@
+package src;
+
 public abstract class Personne {
     protected int id;
     protected String nom;

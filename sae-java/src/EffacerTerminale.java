@@ -1,5 +1,5 @@
 // Voici la seule partie du code qui a été faite avec IA, Car impossible de trouver de la doc
-
+package src;
 
 public class EffacerTerminale {
     public static void clearConsole() {

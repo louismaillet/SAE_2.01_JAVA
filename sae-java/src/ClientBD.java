@@ -1,3 +1,4 @@
+package src;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -19,6 +20,23 @@ public class ClientBD {
             pstmt.setString(5, client.getCodepostal());
             pstmt.setString(6, client.getVillecli());
             pstmt.executeUpdate();
+        }
+    }
+
+    public static int getCPParId(Connection connexion, int idClient) {
+        String sql = "SELECT codepostal FROM CLIENT WHERE idcli = ?";
+        try (var pstmt = connexion.prepareStatement(sql)) {
+            pstmt.setInt(1, idClient);
+            try (var rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt("codepostal");
+                } else {
+                    return 0; // ou une valeur par défaut appropriée
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return 0; // ou une valeur par défaut appropriée
         }
     }
 
@@ -90,7 +108,7 @@ public class ClientBD {
 
         List<Livre> recommandationsListe = new ArrayList<>(recommandationsUniques);
         if (recommandationsListe.size() > 5) {
-            return recommandationsListe.subList(0, 5); // la methode sublist retourne les 5 premiers livres nouvelle methode apprise !
+            return recommandationsListe; // la methode sublist retourne les 5 premiers livres nouvelle methode apprise !
         } else {
             return recommandationsListe;
         }
